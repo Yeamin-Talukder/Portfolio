@@ -6,12 +6,12 @@
         top : 0vh;
         left: 0vh;
         padding: 0vw;
-        height: 5vh;
+        height: 10vh;
 
     }
 
     nav .up{
-        height: 5vh;
+        height: 10vh;
         width: 100%;
         padding: 0vw;
         display: flex;
@@ -27,11 +27,11 @@
     nav .up .cv
 {
    background-color: #00b894;
-    height: 5vh;
-    width: 10vh;
+    height: 10vh;
+    width: 15vh;
     position: relative;
     right: 5vw;
-    font-size: .6rem;
+    font-size: 1rem;
     padding: 0%;
     text-align: center;
     display: flex;
@@ -91,8 +91,8 @@ width: 100%;
     margin : 2vh;  
     background-color: rgba(255, 255, 255,.1);
     border: 1px solid white;
-    width : 2vw;
-    height: 2vw;
+    width : 4vw;
+    height: 4vw;
     border-radius: 50%;
     text-align: center;
     padding: 2vw;
@@ -105,7 +105,7 @@ width: 100%;
     color: white;
     text-align: center;
     z-index: 5;
-    font-size: 3vw;
+    font-size: 4vw;
    
     
 }
@@ -119,20 +119,21 @@ width: 100%;
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    margin: 5vh;
+    margin: 3vh;
     padding: 0;
 }
 
 .skill ul li {
     color: white;
     width : 15vw;
-    height: 12vw;
+    height: auto;
     margin: 3vh;
     padding: 5vw;
     border-bottom: 1vh solid #00b894;
     border-radius: 10%;
     background-color: #2c3e50;
     text-align: center;
+    display: inline-block;
     
 }
 
@@ -152,40 +153,24 @@ box-shadow: .5vh .5vh 2vh black;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 5vw;
+    font-size: 7vw;
 }
 
 
 .skill ul li p{
     font-weight: 700;
     font-size: 2vw;
+    padding: 2vw;
 }
 
 
-
-
-
-
-section
-{
-    /* background-color: red; */
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+nav .icon img {
+    height: 100%;
+    width: 100%;   
+    border-radius: 5;
+    padding: 2vw; 
+    margin-left: 5vw;
+    }
 
 
 

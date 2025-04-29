@@ -419,6 +419,8 @@ box-shadow: .5vh .5vh 2vh black;
     color: white;
     text-decoration: none;
     position: relative;
+    display: inline-block;
+
 }
 
 
