@@ -125,6 +125,7 @@ nav .up .cv
     padding: 2%;
     font-size: 1.2vw;
     text-align: center;
+    /* border-radius: 1vw 0vw 0vw 1vw; */
 }
 
 nav .up .cv:hover
