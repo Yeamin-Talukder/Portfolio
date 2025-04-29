@@ -125,7 +125,7 @@ width: 100%;
 
 .skill ul li {
     color: white;
-    width : 15vw;
+    width : 15vh;
     height: auto;
     margin: 3vh;
     padding: 5vw;
@@ -159,7 +159,7 @@ box-shadow: .5vh .5vh 2vh black;
 
 .skill ul li p{
     font-weight: 700;
-    font-size: 2vw;
+    font-size: 2vh;
     padding: 2vw;
 }
 
@@ -171,7 +171,6 @@ nav .icon img {
     padding: 2vw; 
     margin-left: 5vw;
     }
-
 
 
 
