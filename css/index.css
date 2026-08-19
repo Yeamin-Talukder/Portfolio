@@ -939,11 +939,11 @@ footer span { color: var(--primary); }
 @keyframes fadeInUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:none;} }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE (ALL DEVICES)
    ============================================ */
 @media (max-width: 1024px) {
     .hero-inner { flex-direction: column-reverse; text-align: center; gap: 40px; }
-    .hero-text { max-width: 100%; }
+    .hero-text { max-width: 100%; margin: 0 auto; }
     .hero-cta, .hero-contacts, .hero-socials { justify-content: center; }
     .hero-bio { margin: 0 auto 28px; }
     .hero-avatar-wrap { width: 250px; height: 250px; }
@@ -958,7 +958,7 @@ footer span { color: var(--primary); }
     .nav-links { display: none; position: fixed; top: 0; right: -100%; bottom: 0; width: 260px; flex-direction: column; background: rgba(8,15,23,0.98); backdrop-filter: blur(20px); padding: 80px 30px 30px; gap: 4px; transition: right 0.35s ease; z-index: 999; border-left: 1px solid var(--border); }
     .nav-links.open { right: 0; display: flex; }
     .nav-links a { padding: 12px 16px; font-size: 1rem; border-radius: 10px; }
-    .hamburger { display: flex; }
+    .hamburger { display: flex; z-index: 1000; position: relative; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
     .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -967,4 +967,29 @@ footer span { color: var(--primary); }
     .achievement-row { grid-template-columns: 38px 16px 1fr; gap: 0 16px; }
     .stats-grid { grid-template-columns: 1fr; }
     .live-stats { flex-direction: column; }
+    .contact-left h2 { font-size: 2.5rem; }
+    .say-hello-btn { width: 160px; height: 160px; font-size: 1rem; }
+}
+
+@media (max-width: 576px) {
+    .page-section { padding: 60px 5%; }
+    .hero { padding: 100px 5% 40px; }
+    .hero-text h1 { font-size: 2.8rem; }
+    .hero-role { font-size: 1rem; }
+    .about-numbers { grid-template-columns: 1fr; }
+    .projects-grid, .skills-wrapper, .stats-grid { grid-template-columns: 1fr; }
+    
+    .edu-item { flex-direction: column; text-align: center; gap: 16px; padding: 20px; }
+    .edu-icon { margin: 0 auto; }
+    
+    .achievements-list::before { display: none; }
+    .achievement-row { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 16px; }
+    .achievement-row:hover { transform: translateY(-4px); }
+    .ach-dot { display: none; }
+    .ach-content { border: none; padding: 0; background: transparent !important; flex-direction: column; gap: 12px; width: 100%; }
+    .ach-content:hover { transform: none; }
+    .ach-year { text-align: center; font-size: 1rem; background: var(--glow); padding: 4px 12px; border-radius: 20px; }
+    
+    .contact-link-row { flex-direction: column; text-align: center; padding: 20px; }
+    .nav-cta { display: none; } /* Hide resume button on very small screens to save space for logo and hamburger */
 }
