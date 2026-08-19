@@ -3,190 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yeamin</title>
+    <title>Yeamin Talukder &mdash; Developer & Competitive Programmer</title>
+    <meta name="description" content="Portfolio of Md. Yeamin Talukder &mdash; CSE student, competitive programmer, and software developer at the University of Barishal.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/mobile.css">
     <link rel="icon" href="img/icon.png" type="image/x-icon">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-<header data-aos="fade-right">
-    <span class="moon" data-aos="fade-up"></span>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-    <section class="star">
-        <span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span>
-    </section>
-
-    <section class="dot">
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span>
-    </section>
-
-    <section class="social">
-        <ul>
-            <li data-aos="fade-up"><a href="https://www.facebook.com/2.YH.am.IN" class="facebook" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-            <li data-aos="fade-down"><a href="https://codeforces.com/profile/YH_AM-IN" class="twitter" target="_blank"><i class="fa-solid fa-code"></i></a></li>
-            <li data-aos="fade-up"><a href="https://www.instagram.com/_yh_am_in_/" class="instagram" target="_blank"><i class="fab fa-instagram"></i></a></li>
-            <li data-aos="fade-down"><a href="www.linkedin.com/in/yeamin-talukder" class="linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
-            <li data-aos="fade-up"><a href="https://github.com/Yeamin-Talukder" class="github" target="_blank"><i class="fab fa-github"></i></a></li>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="#hero" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>YEAMIN<span class="logo-bracket">/&gt;</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about" data-section="about">About</a></li>
+            <li><a href="#skills" data-section="skills">Skills</a></li>
+            <li><a href="#stats" data-section="stats">Stats</a></li>
+            <li><a href="#projects" data-section="projects">Projects</a></li>
+            <li><a href="#achievements" data-section="achievements">Achievements</a></li>
+            <li><a href="#education" data-section="education">Education</a></li>
+            <li><a href="#contact" data-section="contact">Contact</a></li>
         </ul>
+        <div class="nav-right">
+            <a href="downlode/cv.docx" class="btn-primary nav-cta" download>
+                <i class="fas fa-download"></i> Resume
+            </a>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <canvas id="heroCanvas"></canvas>
+        <div class="hero-inner">
+            <!-- Left: Text Content -->
+            <div class="hero-text fade-in-up">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    Available for opportunities
+                </div>
+                <h1>Md. Yeamin<br><span class="highlight">Talukder</span></h1>
+                <div class="hero-role">
+                    <span class="role-prefix">I am a &nbsp;</span>
+                    <span id="typing-text" class="role-typed"></span><span class="cursor"></span>
+                </div>
+                <p class="hero-bio">CSE student at the University of Barishal &mdash; passionate about competitive programming and building performant software.</p>
+
+                <div class="hero-contacts">
+                    <a href="mailto:mdyeamen611@gmail.com" class="contact-pill">
+                        <i class="fas fa-envelope"></i>
+                        <span>mdyeamen611@gmail.com</span>
+                    </a>
+                    <a href="tel:01984493596" class="contact-pill">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>01984493596</span>
+                    </a>
+                </div>
+
+                <div class="hero-cta">
+                    <a href="#projects" class="btn-primary">View My Work <i class="fas fa-arrow-right"></i></a>
+                    <a href="#contact" class="btn-outline">Get in Touch</a>
+                </div>
+
+                <div class="hero-socials">
+                    <a href="https://github.com/Yeamin-Talukder" target="_blank" aria-label="GitHub" class="social-icon"><i class="fab fa-github"></i></a>
+                    <a href="https://codeforces.com/profile/YH_AM-IN" target="_blank" aria-label="Codeforces" class="social-icon"><i class="fas fa-code"></i></a>
+                    <a href="https://www.linkedin.com/in/yh-am-in/" target="_blank" aria-label="LinkedIn" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.facebook.com/2.YH.am.IN" target="_blank" aria-label="Facebook" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/yh_am_in" target="_blank" aria-label="Instagram" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.chess.com/member/yh_am_in" target="_blank" aria-label="Chess.com" class="social-icon"><i class="fas fa-chess-knight"></i></a>
+                </div>
+            </div>
+
+            <!-- Right: Avatar -->
+            <div class="hero-avatar-wrap fade-in-up delay-2">
+                <div class="avatar-ring-outer"></div>
+                <div class="avatar-ring-inner"></div>
+                <img src="img/avater.png" alt="Yeamin Talukder" class="hero-avatar">
+                <div class="avatar-badge avatar-badge-cf">
+                    <i class="fas fa-code"></i>
+                    <span>Codeforces</span>
+                </div>
+                <div class="avatar-badge avatar-badge-gh">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <a href="#about" class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-arrow"><i class="fas fa-chevron-down"></i></div>
+        </a>
     </section>
 
-    <div class="avater" data-aos="fade-up"><img class="glow" src="img/avater.png" alt="avatar" draggable="false"></div>
-    <h1 data-aos="zoom-in">Md. Yeamin Talukder</h1>
-    <p data-aos="zoom-out">Problem Solver | Developer</p>
-    <p data-aos="zoom-out">Email: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mdyeamen611@gmail.com&su=Hello%20Yeamin" target="_blank">mdyeamen611@gmail.com</a> | Phone: 01984493596</p>
-    <p data-aos="zoom-out">Department of CSE, University of Barishal</p>
-</header>
+    <!-- About Section -->
+    <section id="about" class="page-section">
+        <div class="section-container">
+            <div class="section-label slide-right">About Me</div>
+            <h2 class="section-heading slide-right">Who I Am</h2>
+            <div class="about-grid">
+                <div class="about-text slide-up">
+                    <p>I am an enthusiastic Computer Science &amp; Engineering student at the <strong>University of Barishal</strong>, driven by a deep curiosity for technology and a commitment to continuous learning.</p>
+                    <p>I thrive on tackling complex algorithmic challenges and architecting robust software solutions. I believe in writing clean code, thinking critically, and constantly pushing the boundaries of my own capabilities.</p>
+                    <div class="about-tags">
+                        <span class="tag"><i class="fas fa-map-marker-alt"></i> Barishal, Bangladesh</span>
+                        <span class="tag"><i class="fas fa-graduation-cap"></i> B.Sc in CSE</span>
+                        <span class="tag"><i class="fas fa-code"></i> Competitive Programmer</span>
+                    </div>
+                </div>
+                <div class="about-numbers slide-up delay-1">
+                    <div class="stat-box">
+                        <span class="stat-big" data-count="7">0</span>
+                        <span class="stat-desc">Contests Participated</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-big" data-count="3">0</span>
+                        <span class="stat-desc">Projects Built</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-big" id="cf-rating-hero">--</span>
+                        <span class="stat-desc">CF Rating</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-big" id="gh-repos-hero">--</span>
+                        <span class="stat-desc">GitHub Repos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<nav data-aos="slide-down">
-    <ul class="up">
-        <li class="icon" data-aos="zoom-in"><div><img src="img/icon.png" alt=""></div></li>
-        <ul class="down">
-            <li><a href="#me" class="scroll">About Me</a></li>
-            <li><a href="#skill">Skills</a></li>
-            <li><a href="#project">Projects</a></li>
-            <li><a href="#code">Coding</a></li>
-            <li><a href="#gain">Achievements</a></li>
-            <li><a href="#edu">Education</a></li>
-        </ul>
-        <li class="cv" data-aos="zoom-in"><a href="downlode/cv.docx">Download CV</a></li>
-    </ul>
-</nav>
+    <!-- Skills Section -->
+    <section id="skills" class="page-section alt-section">
+        <div class="section-container">
+            <div class="section-label slide-right">Core Skills</div>
+            <h2 class="section-heading slide-right">What I Know</h2>
+            <div class="skills-wrapper">
+                <div class="skill-card slide-up">
+                    <div class="skill-card-icon"><i class="fas fa-terminal"></i></div>
+                    <h3>Languages</h3>
+                    <div class="skill-tags">
+                        <span class="skill-pill">C / C++</span>
+                    </div>
+                </div>
+                <div class="skill-card slide-up delay-1">
+                    <div class="skill-card-icon"><i class="fas fa-globe"></i></div>
+                    <h3>Web & Backend</h3>
+                    <div class="skill-tags">
+                        <span class="skill-pill">HTML &amp; CSS</span>
+                        <span class="skill-pill">JavaScript</span>
+                        <span class="skill-pill">PHP &amp; MySQL</span>
+                    </div>
+                </div>
+                <div class="skill-card slide-up delay-2">
+                    <div class="skill-card-icon"><i class="fas fa-wrench"></i></div>
+                    <h3>Core & Tools</h3>
+                    <div class="skill-tags">
+                        <span class="skill-pill">Problem Solving</span>
+                        <span class="skill-pill">Git &amp; GitHub</span>
+                        <span class="skill-pill">Design (AI/PS)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="me" id="me" data-aos="slide-up">
-    <h1 data-aos="slide-right">About Me</h1>
-    <hr>
-    <p data-aos="slide-up">
-        Hi! I'm <b>Yeamin</b>, a passionate and enthusiastic learner with a deep love for technology and creativity.
-        I enjoy <b>building websites</b>, <b>solving problems</b>, and continuously improving my skills.
-        Currently, I am focused on sharpening my abilities in problem solving, web development, and design.
-        I believe in hard work, consistency, and always being curious to learn something new every day.
-        When I'm not coding, you’ll find me exploring new ideas, reading, or playing games.
-    </p>
-</section>
+    <!-- Live Stats -->
+    <section id="stats" class="page-section">
+        <div class="section-container">
+            <div class="section-label slide-right">Live Data</div>
+            <h2 class="section-heading slide-right">My Stats</h2>
+            <div class="stats-grid">
+                <div class="live-card slide-up" id="cf-card">
+                    <div class="live-card-header">
+                        <div class="live-card-icon"><i class="fas fa-code"></i></div>
+                        <div>
+                            <div class="live-card-platform">Codeforces</div>
+                            <a href="https://codeforces.com/profile/YH_AM-IN" target="_blank" class="live-card-handle">@YH_AM-IN</a>
+                        </div>
+                        <div class="live-dot" title="Live data"></div>
+                    </div>
+                    <div class="live-stats">
+                        <div class="live-stat">
+                            <div class="live-stat-value" id="cf-rating">—</div>
+                            <div class="live-stat-label">Current Rating</div>
+                        </div>
+                        <div class="live-stat">
+                            <div class="live-stat-value highlight" id="cf-max-rating">—</div>
+                            <div class="live-stat-label">Max Rating</div>
+                        </div>
+                        <div class="live-stat">
+                            <div class="live-stat-value" id="cf-rank">—</div>
+                            <div class="live-stat-label">Rank</div>
+                        </div>
+                    </div>
+                    <a href="https://codeforces.com/profile/YH_AM-IN" target="_blank" class="live-card-cta">View Profile <i class="fas fa-arrow-right"></i></a>
+                </div>
 
-<section class="skill" id="skill" data-aos="zoom-in">
-    <h1 data-aos="slide-right">Skills</h1>
-    <hr>
-    <ul>
-        <li data-aos="zoom-in"><div><i class="fa-solid fa-code"></i></div><p>Problem Solving</p></li>
-        <li data-aos="zoom-in"><div><i class="fa-brands fa-html5"></i></div><p>HTML & CSS</p></li>
-        <li data-aos="zoom-in"><div><i class="fa-brands fa-js"></i></div><p>JavaScript</p></li>
-        <li data-aos="zoom-in"><div><i class="fa-brands fa-php"></i></div><p>PHP & MySQL</p></li>
-        <li data-aos="zoom-in"><div><i class="fa-solid fa-keyboard"></i></div><p>Fast Typing (75+ WPM)</p></li>
-        <li data-aos="zoom-in"><div><i class="fa-solid fa-image"></i></div><p>Adobe Illustrator / Photoshop</p></li>
-        <li data-aos="zoom-in"><div><i class="fa-brands fa-microsoft"></i></div><p>Microsoft Word / Excel / PowerPoint</p></li>
-    </ul>
-</section>
+                <div class="live-card slide-up delay-1" id="gh-card">
+                    <div class="live-card-header">
+                        <div class="live-card-icon"><i class="fab fa-github"></i></div>
+                        <div>
+                            <div class="live-card-platform">GitHub</div>
+                            <a href="https://github.com/Yeamin-Talukder" target="_blank" class="live-card-handle">@Yeamin-Talukder</a>
+                        </div>
+                        <div class="live-dot" title="Live data"></div>
+                    </div>
+                    <div class="live-stats">
+                        <div class="live-stat">
+                            <div class="live-stat-value highlight" id="gh-repos">—</div>
+                            <div class="live-stat-label">Public Repos</div>
+                        </div>
+                        <div class="live-stat">
+                            <div class="live-stat-value" id="gh-followers">—</div>
+                            <div class="live-stat-label">Followers</div>
+                        </div>
+                    </div>
+                    <a href="https://github.com/Yeamin-Talukder" id="gh-link" target="_blank" class="live-card-cta">View GitHub <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="project" id="project">
-    <h1 data-aos="slide-right">Projects</h1>
-    <hr>
-</section>
+    <!-- Projects Section -->
+    <section id="projects" class="page-section alt-section">
+        <div class="section-container">
+            <div class="section-label slide-right">Work</div>
+            <h2 class="section-heading slide-right">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card slide-up">
+                    <div class="project-card-top">
+                        <div class="project-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="project-links">
+                            <a href="https://github.com/Yeamin-Talukder/Current-Detection" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <h3 class="project-title">Current-Detection</h3>
+                    <p class="project-desc">A Java-based current detection application designed for reliable monitoring and identification of electrical current states.</p>
+                    <div class="project-tags">
+                        <span>Java</span><span>Backend</span>
+                    </div>
+                </div>
 
-<section class="codeing" id="code">
-    <h1 data-aos="slide-right">Coding</h1>
-    <hr>
-    <table data-aos="zoom-in">
-        <tr>
-            <th data-aos="zoom-in">Online Judge</th>
-            <th data-aos="zoom-in">Profile</th>
-            <th data-aos="zoom-in">Max Rating</th>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>Codeforces</td>
-            <td><a href="https://codeforces.com/profile/YH_AM-IN" target="_blank">YH_AM-IN</a></td>
-            <td>1404</td>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>Codechef</td>
-            <td><a href="https://www.codechef.com/users/yh_am_in" target="_blank">YH_AM-IN</a></td>
-            <td>1359</td>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>Atcoder</td>
-            <td><a href="https://atcoder.jp/users/MdYeaminTalukder" target="_blank">MdYeamin Talukder</a></td>
-            <td>None</td>
-        </tr>
-    </table>
-</section>
+                <div class="project-card slide-up delay-1">
+                    <div class="project-card-top">
+                        <div class="project-icon"><i class="fas fa-chess-knight"></i></div>
+                        <div class="project-links">
+                            <a href="https://github.com/Yeamin-Talukder/Chess-app" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <h3 class="project-title">Chess App</h3>
+                    <p class="project-desc">A fully functional Chess application built for mobile users with modern interface paradigms and smooth gameplay.</p>
+                    <div class="project-tags">
+                        <span>Kotlin</span><span>Mobile</span>
+                    </div>
+                </div>
 
-<section class="gain" id="gain">
-    <h1 data-aos="slide-right">Achievements</h1>
-    <hr>
-    <table data-aos="zoom-in">
-        <tr>
-            <th data-aos="zoom-in">Contest Name</th>
-            <th data-aos="zoom-in">Team Name</th>
-            <th data-aos="zoom-in">Rank</th>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>KUET IUPC Onsite 2025</td>
-            <td>BU_NullPointers</td>
-            <td>99</td>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>ICPC Asia Dhaka Regional Site Online Preliminary Round 2024</td>
-            <td>BU_BitBlasters</td>
-            <td>676</td>
-        </tr>
-    </table>
-</section>
+                <div class="project-card slide-up delay-2">
+                    <div class="project-card-top">
+                        <div class="project-icon"><i class="fas fa-microchip"></i></div>
+                        <div class="project-links">
+                            <a href="https://github.com/Yeamin-Talukder/NFC-HUB" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <h3 class="project-title">NFC-HUB</h3>
+                    <p class="project-desc">An innovative NFC-based hub built to streamline digital interactions and enable seamless contactless data sharing.</p>
+                    <div class="project-tags">
+                        <span>NFC</span><span>Web</span>
+                    </div>
+                </div>
+            </div>
+            <div class="view-more slide-up">
+                <a href="https://github.com/Yeamin-Talukder" target="_blank" class="btn-outline">
+                    <i class="fab fa-github"></i> View All on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
 
-<section class="edu" id="edu">
-    <h1 data-aos="slide-right">Education</h1>
-    <hr>
-    <table data-aos="zoom-in">
-        <tr>
-            <th data-aos="zoom-in">Exam</th>
-            <th data-aos="zoom-in">Institute</th>
-            <th data-aos="zoom-in">Year</th>
-            <th data-aos="zoom-in">Result</th>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>HSC</td>
-            <td>Govt. Syed Hatem Ali College</td>
-            <td>2021</td>
-            <td>5.00</td>
-        </tr>
-        <tr data-aos="zoom-in">
-            <td>SSC</td>
-            <td>Nooria High School</td>
-            <td>2019</td>
-            <td>5.00</td>
-        </tr>
-    </table>
-</section>
+    <!-- Achievements Section -->
+    <section id="achievements" class="page-section">
+        <div class="section-container">
+            <div class="section-label slide-right">Competitive Programming</div>
+            <h2 class="section-heading slide-right">Achievements</h2>
+            <div class="achievements-list">
+                <div class="achievement-row slide-up">
+                    <div class="ach-year">2026</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>IUT 12th ICT Fest Inter-University Programming Contest</h4>
+                            <p>Team: <strong>BU_Optimizers</strong></p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>30</strong></div>
+                    </div>
+                </div>
+                <div class="achievement-row slide-up delay-1">
+                    <div class="ach-year">2026</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>SUST CSE Carnival Programming Contest</h4>
+                            <p>Team: <strong>BU_TrieHards</strong></p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>39</strong></div>
+                    </div>
+                </div>
+                <div class="achievement-row slide-up">
+                    <div class="ach-year">2026</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>NSUCEC CYBERNAUTS IUPC</h4>
+                            <p>Team: <strong>BU_Optimizers</strong></p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>79</strong></div>
+                    </div>
+                </div>
+                <div class="achievement-row slide-up delay-1">
+                    <div class="ach-year">2025</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>ICPC Dhaka Regional Site — Onsite (Hosted by BUBT)</h4>
+                            <p>Team: <strong>BU_Optimizers</strong> &mdash; Solved 3 problems</p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>94</strong></div>
+                    </div>
+                </div>
+                <div class="achievement-row slide-up">
+                    <div class="ach-year">2025</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>CUET Inter University Programming Contest (IUPC)</h4>
+                            <p>Team: <strong>BU_Optimizers</strong></p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>68</strong></div>
+                    </div>
+                </div>
+                <div class="achievement-row slide-up delay-1">
+                    <div class="ach-year">2025</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>NWE CSE FEST Programming Contest</h4>
+                            <p>Team: <strong>BU_Optimizers</strong></p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>18</strong></div>
+                    </div>
+                </div>
+                <div class="achievement-row slide-up">
+                    <div class="ach-year">2025</div>
+                    <div class="ach-dot"></div>
+                    <div class="ach-content">
+                        <div class="ach-info">
+                            <h4>KUET IUPC Onsite</h4>
+                            <p>Team: <strong>BU_NullPointers</strong></p>
+                        </div>
+                        <div class="ach-rank">Rank <strong>99</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<p class="copyright">&copy; 2025 Yeamin. All rights reserved.</p>
+    <!-- Education Section -->
+    <section id="education" class="page-section alt-section">
+        <div class="section-container">
+            <div class="section-label slide-right">Academic</div>
+            <h2 class="section-heading slide-right">Education</h2>
+            <div class="edu-timeline">
+                <div class="edu-item slide-up">
+                    <div class="edu-icon"><i class="fas fa-university"></i></div>
+                    <div class="edu-body">
+                        <div class="edu-degree">B.Sc in Computer Science &amp; Engineering</div>
+                        <div class="edu-school">University of Barishal</div>
+                        <div class="edu-period">2022 — Present</div>
+                    </div>
+                    <div class="edu-badge">Ongoing</div>
+                </div>
+                <div class="edu-item slide-up delay-1">
+                    <div class="edu-icon"><i class="fas fa-school"></i></div>
+                    <div class="edu-body">
+                        <div class="edu-degree">Higher Secondary Certificate (HSC)</div>
+                        <div class="edu-school">Govt. Syed Hatem Ali College</div>
+                        <div class="edu-period">2019 — 2021</div>
+                    </div>
+                    <div class="edu-badge">GPA 5.00</div>
+                </div>
+                <div class="edu-item slide-up delay-2">
+                    <div class="edu-icon"><i class="fas fa-book"></i></div>
+                    <div class="edu-body">
+                        <div class="edu-degree">Secondary School Certificate (SSC)</div>
+                        <div class="edu-school">Nooria High School</div>
+                        <div class="edu-period">Passed 2019</div>
+                    </div>
+                    <div class="edu-badge">GPA 5.00</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div id="loader">
-    <div class="spinner"></div>
-</div>
+    <!-- Contact Section -->
+    <section id="contact" class="page-section contact-section">
+        <div class="section-container">
+            <div class="contact-wrap slide-up">
+                <div class="contact-left">
+                    <div class="section-label">Let's Connect</div>
+                    <h2>Got an idea?<br>Let's build it.</h2>
+                    <p>Always open to discussing new projects, creative ideas, or opportunities. Whether it's a quick question or a long-term collaboration &mdash; my inbox is open.</p>
+                    <div class="contact-links">
+                        <a href="mailto:mdyeamen611@gmail.com" class="contact-link-row">
+                            <div class="contact-link-icon"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <div class="contact-link-label">Email</div>
+                                <div class="contact-link-val">mdyeamen611@gmail.com</div>
+                            </div>
+                        </a>
+                        <a href="tel:01984493596" class="contact-link-row">
+                            <div class="contact-link-icon"><i class="fas fa-phone-alt"></i></div>
+                            <div>
+                                <div class="contact-link-label">Phone</div>
+                                <div class="contact-link-val">01984493596</div>
+                            </div>
+                        </a>
+                        <a href="https://www.linkedin.com/in/yh-am-in/" target="_blank" class="contact-link-row">
+                            <div class="contact-link-icon"><i class="fab fa-linkedin-in"></i></div>
+                            <div>
+                                <div class="contact-link-label">LinkedIn</div>
+                                <div class="contact-link-val">yh-am-in</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-right">
+                    <a href="mailto:mdyeamen611@gmail.com" class="say-hello-btn">
+                        <span>Say Hello</span>
+                        <div class="say-hello-arrow"><i class="fas fa-paper-plane"></i></div>
+                    </a>
+                    <div class="contact-socials">
+                        <a href="https://github.com/Yeamin-Talukder" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+                        <a href="https://codeforces.com/profile/YH_AM-IN" target="_blank" class="social-icon"><i class="fas fa-code"></i></a>
+                        <a href="https://www.instagram.com/yh_am_in" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/2.YH.am.IN" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.chess.com/member/yh_am_in" target="_blank" class="social-icon"><i class="fas fa-chess-knight"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script src="js/index.js"></script>
-<script>
-    AOS.init({
-        duration: 1000,
-        easing: 'ease-out',
-        once: true,
-        mirror: false,
-        offset: 100
-    });
-</script>
+    <footer>
+        <p>&copy; 2026 <span>Md. Yeamin Talukder</span>. Crafted with passion &amp; caffeine.</p>
+        <a href="#hero" class="back-to-top" id="backToTop" aria-label="Back to top">
+            <i class="fas fa-chevron-up"></i>
+        </a>
+    </footer>
 
-<script>
-    window.addEventListener("load", function() {
-        const loader = document.getElementById("loader");
-        loader.style.display = "none";
-    });
-</script>
-
+    <script src="js/index.js"></script>
 </body>
 </html>
