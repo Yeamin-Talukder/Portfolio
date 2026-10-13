@@ -774,3 +774,14 @@ a.contact-val:hover span:last-child { color: var(--accent-2); }
     .reveal { opacity: 1; translate: none; }
 }
 .is-preview .preloader { display: none; }
+
+/* Hackathon entries in the achievements trail */
+.trail-item.is-hack .trail-node { border-color: var(--sun); box-shadow: 0 0 0 4px rgba(var(--sun-rgb), 0.1), 0 0 14px rgba(var(--sun-rgb), 0.6); }
+.trail-item.is-hack:hover .trail-node { background: var(--sun); }
+.trail-item.is-hack:hover .trail-card { border-color: rgba(var(--sun-rgb), 0.3); }
+.type-tag { display: inline-flex; align-items: center; gap: 5px; margin-right: 8px; padding: 1px 8px; border-radius: 999px; color: var(--sun); background: rgba(var(--sun-rgb), 0.1); border: 1px solid rgba(var(--sun-rgb), 0.3); }
+.trail-card .link-arrow { margin-top: 8px; font-size: 0.82rem; }
+.rank-award { gap: 3px; max-width: 130px; text-align: center; background: rgba(var(--sun-rgb), 0.08); border-color: rgba(var(--sun-rgb), 0.3); }
+.rank-award i { color: var(--sun); font-size: 0.95rem; }
+.rank.rank-award strong { font-size: 0.9rem; line-height: 1.25; color: var(--sun); }
+.filter i { font-size: 0.8em; margin-right: 6px; }

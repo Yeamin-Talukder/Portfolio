@@ -284,22 +284,39 @@
         const items = list(C.achievements);
         if (!items.length) return "";
         const years = [...new Set(items.map(a => a.year).filter(Boolean))];
-        const chips = years.length > 1 ? `<div class="filters no-swipe reveal">
-            <button class="filter is-on" data-filter="*">All</button>
-            ${years.map(y => `<button class="filter" data-filter="${esc(y)}">${esc(y)}</button>`).join("")}
+        const hasHack = items.some(a => a.type === "hackathon");
+        const hasContest = items.some(a => a.type !== "hackathon");
+        const typeChips = hasHack && hasContest
+            ? `<button class="filter" data-filter="contest"><i class="fas fa-trophy"></i>Contests</button><button class="filter" data-filter="hackathon"><i class="fas fa-laptop-code"></i>Hackathons</button>` : "";
+        const yearChips = years.length > 1 ? years.map(y => `<button class="filter" data-filter="${esc(y)}">${esc(y)}</button>`).join("") : "";
+        const chips = typeChips || yearChips ? `<div class="filters no-swipe reveal">
+            <button class="filter is-on" data-filter="*">All</button>${typeChips}${yearChips}
         </div>` : "";
-        const rows = items.map((a, i) => `
-            <li class="trail-item reveal" style="--i:${i % 4}" data-tags="${esc(a.year)}">
+        const rows = items.map((a, i) => {
+            const hack = a.type === "hackathon";
+            const bits = [
+                a.team ? `Team <strong>${esc(a.team)}</strong>` : "",
+                hack && a.role ? `Role <strong>${esc(a.role)}</strong>` : "",
+                hack && a.project ? `Built <strong>${esc(a.project)}</strong>` : "",
+                esc(a.note)
+            ].filter(Boolean).join(" · ");
+            const badge = hack && a.award
+                ? `<div class="rank rank-award"><i class="fas fa-award"></i><strong>${esc(a.award)}</strong></div>`
+                : a.rank ? `<div class="rank${/^\d+$/.test(a.rank) && +a.rank <= 30 ? " rank-top" : ""}"><span>Rank</span><strong>${esc(a.rank)}</strong></div>` : "";
+            return `
+            <li class="trail-item reveal${hack ? " is-hack" : ""}" style="--i:${i % 4}" data-tags="${esc(a.year)}|${hack ? "hackathon" : "contest"}">
                 <span class="trail-node"></span>
                 <div class="trail-card glass spot">
                     <div class="trail-main">
-                        <span class="trail-year">${esc(a.year)}</span>
+                        <span class="trail-year">${hack ? '<span class="type-tag"><i class="fas fa-laptop-code"></i>Hackathon</span>' : ""}${esc(a.year)}</span>
                         <h3>${esc(a.title)}</h3>
-                        <p>${a.team ? `Team <strong>${esc(a.team)}</strong>` : ""}${a.team && a.note ? " · " : ""}${esc(a.note)}</p>
+                        ${bits ? `<p>${bits}</p>` : ""}
+                        ${hack && a.link ? `<a href="${esc(safeUrl(a.link))}"${ext(a.link)} class="link-arrow">View project ${icon("fas fa-arrow-up-right-from-square")}</a>` : ""}
                     </div>
-                    ${a.rank ? `<div class="rank${/^\d+$/.test(a.rank) && +a.rank <= 30 ? " rank-top" : ""}"><span>Rank</span><strong>${esc(a.rank)}</strong></div>` : ""}
+                    ${badge}
                 </div>
-            </li>`).join("");
+            </li>`;
+        }).join("");
         return `${chips}<ol class="trail">${rows}</ol>`;
     };
 

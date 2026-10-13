@@ -244,17 +244,24 @@
         },
         {
             id: "achievements", label: "Achievements", icon: "fas fa-trophy", preview: "achievements",
-            desc: "Contest results. Ranks ≤ 30 glow gold; years become filters.",
+            desc: "Contests and hackathons. Pick a type per entry — hackathons get award, role, project and link fields.",
             fields: [
                 F.list("achievements", "Achievements", {
-                    addLabel: "Add achievement", titleKey: "title", subOf: i => [i.year, i.rank && "Rank " + i.rank].filter(Boolean).join(" · "),
-                    newItem: () => ({ year: String(new Date().getFullYear()), title: "New contest", team: "", note: "", rank: "" }),
+                    addLabel: "Add achievement", titleKey: "title",
+                    iconOf: i => i.type === "hackathon" ? "fas fa-laptop-code" : "fas fa-trophy",
+                    subOf: i => [i.type === "hackathon" ? "Hackathon" : "Contest", i.year, (i.type === "hackathon" && i.award) || (i.rank && "Rank " + i.rank)].filter(Boolean).join(" · "),
+                    newItem: () => ({ type: "contest", year: String(new Date().getFullYear()), title: "New contest", team: "", note: "", rank: "" }),
                     fields: [
-                        F.text("title", "Contest / title"),
+                        F.select("type", "Type", [{ value: "contest", label: "Programming contest" }, { value: "hackathon", label: "Hackathon" }], { half: true, rerender: true }),
                         F.text("year", "Year", { half: true }),
-                        F.text("rank", "Rank", { half: true }),
+                        F.text("title", "Contest / hackathon name"),
                         F.text("team", "Team", { half: true }),
-                        F.text("note", "Note", { half: true, placeholder: "Solved 3 problems" })
+                        F.text("rank", "Rank", { half: true, placeholder: "e.g. 12" }),
+                        F.text("award", "Award / result", { half: true, placeholder: "Winner, Finalist, Participant…", showIf: i => i.type === "hackathon" }),
+                        F.text("role", "Your role", { half: true, placeholder: "Frontend developer", showIf: i => i.type === "hackathon" }),
+                        F.text("project", "Project built", { half: true, placeholder: "AI study buddy", showIf: i => i.type === "hackathon" }),
+                        F.url("link", "Project / certificate link", { half: true, showIf: i => i.type === "hackathon" }),
+                        F.text("note", "Note", { placeholder: "Solved 3 problems · 36-hour event" })
                     ]
                 })
             ]
@@ -343,8 +350,9 @@
     function fieldHTML(f, base) {
         const path = join(base, f.path);
         const v = getPath(state, path);
+        if (f.showIf && !f.showIf(getPath(state, base) || {})) return "";
         const half = f.half ? " half" : "";
-        const bind = `data-bind="${esc(path)}" data-key="${esc(path)}"`;
+        const bind = `data-bind="${esc(path)}" data-key="${esc(path)}"${f.rerender ? " data-rerender" : ""}`;
         switch (f.type) {
             case "group":
                 return `<section class="card">
@@ -748,7 +756,7 @@
                 if (icEl && f.iconOf) icEl.className = f.iconOf(item) || "";
             }
         }
-        changed(false);
+        changed(el.hasAttribute("data-rerender"));
     });
 
     // chips (string arrays)
