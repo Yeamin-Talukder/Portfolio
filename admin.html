@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#05060f">
+    <title>Mission Control — Portfolio Admin</title>
+    <link rel="icon" href="img/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <canvas id="starfield" class="starfield" aria-hidden="true"></canvas>
+    <div class="nebula" aria-hidden="true"></div>
+
+    <!-- ============ LOGIN ============ -->
+    <main class="login" id="login" hidden>
+        <div class="login-card">
+            <div class="login-brand">
+                <span class="brand-mark"><i></i></span>
+                <span>Mission Control</span>
+            </div>
+            <h1>Welcome back, commander.</h1>
+            <p class="login-sub">Connect your GitHub repository to edit and publish your portfolio. Changes go live after Netlify redeploys (about a minute).</p>
+
+            <form id="loginForm" class="login-form" autocomplete="off">
+                <label class="field">
+                    <span class="field-label">GitHub access token</span>
+                    <div class="input-wrap">
+                        <i class="fas fa-key"></i>
+                        <input class="input" id="lgToken" type="password" placeholder="github_pat_…" required spellcheck="false">
+                        <button type="button" class="input-btn" id="lgShow" aria-label="Show token"><i class="far fa-eye"></i></button>
+                    </div>
+                </label>
+
+                <details class="repo-details">
+                    <summary><i class="fas fa-code-branch"></i> Repository <span id="lgRepoSummary"></span></summary>
+                    <div class="grid">
+                        <label class="field half"><span class="field-label">Owner</span><input class="input" id="lgOwner" required></label>
+                        <label class="field half"><span class="field-label">Repository</span><input class="input" id="lgRepo" required></label>
+                        <label class="field half"><span class="field-label">Branch</span><input class="input" id="lgBranch" placeholder="main"></label>
+                        <label class="field half"><span class="field-label">Live site URL</span><input class="input" id="lgSite" placeholder="https://…"></label>
+                    </div>
+                </details>
+
+                <label class="check"><input type="checkbox" id="lgRemember" checked><span>Remember on this device</span></label>
+                <p class="form-error" id="lgError" hidden></p>
+                <button class="btn btn-primary btn-block" type="submit" id="lgSubmit"><span>Connect &amp; launch</span><i class="fas fa-rocket"></i></button>
+            </form>
+
+            <div class="divider"><span>or</span></div>
+            <button class="btn btn-ghost btn-block" id="lgOffline"><i class="fas fa-plug-circle-xmark"></i><span>Continue offline (local draft)</span></button>
+
+            <details class="help">
+                <summary><i class="far fa-circle-question"></i> How do I get a token?</summary>
+                <ol>
+                    <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Fine-grained tokens → Generate new token</a>.</li>
+                    <li>Repository access: <b>Only select repositories</b> → pick your portfolio repo.</li>
+                    <li>Permissions → Repository → <b>Contents: Read and write</b>.</li>
+                    <li>Generate, copy, and paste it above. The token stays in this browser only.</li>
+                </ol>
+            </details>
+        </div>
+    </main>
+
+    <!-- ============ APP ============ -->
+    <div class="app" id="app" hidden>
+        <aside class="sidebar" id="sidebar">
+            <div class="side-brand">
+                <span class="brand-mark"><i></i></span>
+                <div><strong>Mission Control</strong><small>Portfolio admin</small></div>
+                <button class="icon-btn side-close" data-act="close-side" aria-label="Close menu"><i class="fas fa-xmark"></i></button>
+            </div>
+            <nav class="side-nav" id="sideNav"></nav>
+            <div class="side-foot" id="sideFoot"></div>
+        </aside>
+        <div class="side-scrim" data-act="close-side"></div>
+
+        <div class="main">
+            <header class="topbar">
+                <button class="icon-btn menu-btn" data-act="open-side" aria-label="Open menu"><i class="fas fa-bars"></i></button>
+                <div class="topbar-title">
+                    <small id="pageKicker">Admin</small>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <span class="status-pill" id="statusPill"><i></i><span>Up to date</span></span>
+                <a class="icon-btn hide-sm" id="liveLink" href="index.html" target="_blank" rel="noopener" title="Open live site"><i class="fas fa-arrow-up-right-from-square"></i></a>
+                <button class="icon-btn hide-sm" data-act="toggle-preview" title="Toggle preview"><i class="fas fa-display"></i></button>
+                <button class="btn btn-primary btn-sm hide-sm" data-act="publish" id="publishBtn"><i class="fas fa-cloud-arrow-up"></i><span>Publish</span></button>
+            </header>
+
+            <div class="workspace">
+                <div class="editor-scroll" id="editorScroll">
+                    <div class="editor" id="editor"></div>
+                </div>
+                <aside class="preview" id="preview">
+                    <div class="preview-bar">
+                        <div class="seg" role="tablist">
+                            <button class="seg-btn is-on" data-device="desktop" title="Desktop"><i class="fas fa-desktop"></i></button>
+                            <button class="seg-btn" data-device="mobile" title="Phone"><i class="fas fa-mobile-screen"></i></button>
+                        </div>
+                        <span class="preview-label"><span class="live-dot"></span>Live preview</span>
+                        <button class="icon-btn sm" data-act="reload-preview" title="Reload preview"><i class="fas fa-rotate-right"></i></button>
+                        <button class="icon-btn sm" data-act="toggle-preview" title="Close preview"><i class="fas fa-xmark"></i></button>
+                    </div>
+                    <div class="preview-stage" id="previewStage">
+                        <div class="preview-frame" id="previewFrame">
+                            <iframe id="previewIframe" title="Live preview" src="about:blank"></iframe>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- Mobile action bar -->
+        <nav class="mbar">
+            <button class="mbar-btn" data-act="open-side"><i class="fas fa-layer-group"></i><span>Pages</span></button>
+            <button class="mbar-btn" data-act="toggle-preview"><i class="fas fa-eye"></i><span>Preview</span></button>
+            <button class="mbar-btn mbar-primary" data-act="publish"><i class="fas fa-cloud-arrow-up"></i><span>Publish</span></button>
+        </nav>
+    </div>
+
+    <!-- Boot loader -->
+    <div class="boot" id="boot"><div class="spinner"></div><p id="bootText">Connecting…</p></div>
+
+    <!-- Modal root -->
+    <div class="modal" id="modal" aria-hidden="true">
+        <div class="modal-scrim" data-modal-close></div>
+        <div class="modal-card" role="dialog" aria-modal="true" id="modalCard"></div>
+    </div>
+
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script src="data/content.js"></script>
+    <script src="js/starfield.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
