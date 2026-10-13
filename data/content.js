@@ -220,6 +220,13 @@ window.PORTFOLIO = {
   "achievements": [
     {
       "year": "2026",
+      "title": "BUP HACKATHON",
+      "team": "BU_ByteBrain",
+      "note": "",
+      "rank": "Onsite Participant"
+    },
+    {
+      "year": "2026",
       "title": "PSTU Inter University Programming Contest 2026 (South Zone)",
       "team": "Frozen_a_Marbo",
       "note": "",
