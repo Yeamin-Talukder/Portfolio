@@ -223,7 +223,10 @@ window.PORTFOLIO = {
       "title": "BUP HACKATHON",
       "team": "BU_ByteBrain",
       "note": "",
-      "rank": "Onsite Participant"
+      "rank": "",
+      "type": "hackathon",
+      "award": "Onsite Participant",
+      "role": "System Tester"
     },
     {
       "year": "2026",
