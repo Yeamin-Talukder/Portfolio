@@ -190,6 +190,21 @@ window.PORTFOLIO = {
       "featured": true
     },
     {
+      "title": "ShareBro",
+      "desc": "ShareBro is a free Android app that groups your photos by face with on-device AI and sends each friend only the photos they're in, straight to their phone over Wi-Fi, a hotspot or with no network at all. It's built for group trips, weddings and events: the friend who took 2,000 photos can share them with everyone in minutes instead of hours. Works 100% offline: no cloud, no uploads, no account.",
+      "icon": "fas fa-rocket",
+      "tags": [
+        "flatter app",
+        "photo recognizer",
+        "file sharing",
+        "sharing app",
+        "photo gallary"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/ShareBro",
+      "live": "https://yeamin-talukder.github.io/ShareBro/",
+      "featured": true
+    },
+    {
       "title": "Current-Detection",
       "desc": "A Java-based current detection application designed for reliable monitoring and identification of electrical current states.",
       "icon": "fas fa-bolt",
