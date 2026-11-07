@@ -215,6 +215,27 @@ window.PORTFOLIO = {
       "github": "https://github.com/Yeamin-Talukder/Yeamin-chess-bot",
       "live": "https://yeamin-chess-bot.netlify.app/",
       "featured": true
+    },
+    {
+      "title": "Jolpai Keyboard",
+      "desc": "A free, open-source, privacy-first Bangla (Bengali) keyboard for Android with Avro phonetic typing, the National (জাতীয়) layout, English QWERTY, smart suggestions, an offline spelling and grammar check, offline English↔Bangla translation, voice typing, a clipboard manager and 64 themes. No ads, no tracking, and nothing you type leaves your phone.",
+      "icon": "",
+      "tags": [
+        "keyboard",
+        "andorid",
+        "bangla_keyboard",
+        "avro-keyboard",
+        "english-keyboard",
+        "national-keyboard",
+        "android-keyboard",
+        "input-method",
+        "phonetic-keyboard",
+        "offline",
+        "material ui"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/jolpai-keyboard",
+      "live": "https://yeamin-talukder.github.io/jolpai-keyboard/",
+      "featured": true
     }
   ],
   "achievements": [
