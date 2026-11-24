@@ -1,12 +1,15 @@
 window.PORTFOLIO = {
   "meta": {
-    "title": "Yeamin Talukder — Developer & Competitive Programmer",
-    "description": "Portfolio of Md. Yeamin Talukder — CSE student, competitive programmer, and software developer at the University of Barishal."
+    "title": "Yeamin Talukder — Software Developer & Competitive Programmer",
+    "description": "Software developer and competitive programmer from Bangladesh. CSE student at University of Barishal, building Android apps like Jolpai Keyboard and ShareBro.",
+    "siteUrl": "https://yh-am-in.netlify.app/",
+    "image": "img/og-image.png",
+    "jobTitle": "Software Developer & Competitive Programmer"
   },
   "theme": {
-    "accent": "#8b7bff",
-    "accent2": "#38d6f5",
-    "sun": "#ffb547",
+    "accent": "#d4d4d8",
+    "accent2": "#a1a1aa",
+    "sun": "#e4e4e7",
     "stars": "normal",
     "shootingStars": true,
     "motion": true
@@ -24,7 +27,7 @@ window.PORTFOLIO = {
     "bio": "CSE student at the University of Barishal — passionate about competitive programming and building performant software.",
     "available": true,
     "availableText": "Available for opportunities",
-    "avatar": "img/avater.png",
+    "avatar": "img/avatar.webp",
     "resume": "downlode/cv.docx",
     "email": "mdyeamen611@gmail.com",
     "phone": "01984493596",
@@ -89,7 +92,7 @@ window.PORTFOLIO = {
   "orbit": [
     {
       "label": "C++",
-      "icon": "",
+      "icon": "si:cplusplus",
       "short": "C++"
     },
     {
@@ -129,7 +132,7 @@ window.PORTFOLIO = {
     },
     {
       "label": "MySQL",
-      "icon": "fas fa-database",
+      "icon": "si:mysql",
       "short": ""
     }
   ],
@@ -171,10 +174,10 @@ window.PORTFOLIO = {
     {
       "title": "Jolpai Keyboard",
       "desc": "A free, open-source, privacy-first Bangla (Bengali) keyboard for Android with Avro phonetic typing, the National (জাতীয়) layout, English QWERTY, smart suggestions, an offline spelling and grammar check, offline English↔Bangla translation, voice typing, a clipboard manager and 64 themes. No ads, no tracking, and nothing you type leaves your phone.",
-      "icon": "",
+      "icon": "fas fa-keyboard",
       "tags": [
         "keyboard",
-        "andorid",
+        "android",
         "bangla_keyboard",
         "avro-keyboard",
         "english-keyboard",
@@ -187,22 +190,65 @@ window.PORTFOLIO = {
       ],
       "github": "https://github.com/Yeamin-Talukder/jolpai-keyboard",
       "live": "https://yeamin-talukder.github.io/jolpai-keyboard/",
-      "featured": true
+      "featured": true,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/jolpai-keyboard@main/docs/images/banner.png"
     },
     {
       "title": "ShareBro",
       "desc": "ShareBro is a free Android app that groups your photos by face with on-device AI and sends each friend only the photos they're in, straight to their phone over Wi-Fi, a hotspot or with no network at all. It's built for group trips, weddings and events: the friend who took 2,000 photos can share them with everyone in minutes instead of hours. Works 100% offline: no cloud, no uploads, no account.",
-      "icon": "fas fa-rocket",
+      "icon": "fas fa-images",
       "tags": [
-        "flatter app",
+        "flutter app",
         "photo recognizer",
         "file sharing",
         "sharing app",
-        "photo gallary"
+        "photo gallery"
       ],
       "github": "https://github.com/Yeamin-Talukder/ShareBro",
       "live": "https://yeamin-talukder.github.io/ShareBro/",
-      "featured": true
+      "featured": true,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/ShareBro@main/docs/cover.jpg"
+    },
+    {
+      "title": "Jolpai Typing",
+      "desc": "Free online Bangla (Bijoy) and English typing practice, with a step-by-step course to learn Bijoy touch typing. বাংলা টাইপিং শিখুন।",
+      "icon": "fas fa-spell-check",
+      "tags": [
+        "TypeScript",
+        "Web",
+        "Bangla"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/jolpai-typing",
+      "live": "https://yeamin-talukder.github.io/jolpai-typing/",
+      "featured": false,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/jolpai-typing@main/.github/assets/banner.png"
+    },
+    {
+      "title": "BU Bus Tracker",
+      "desc": "Bus tracking app for University of Barishal students: live bus location, the official bus schedule, stops and an offline map. Built with Flutter, MapLibre, OpenStreetMap and Firebase.",
+      "icon": "fas fa-bus",
+      "tags": [
+        "Flutter",
+        "Firebase",
+        "Mobile"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/Barishal-University-Bus-Tracking-App",
+      "live": "https://yeamin-talukder.github.io/Barishal-University-Bus-Tracking-App/",
+      "featured": false,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Barishal-University-Bus-Tracking-App@main/docs/assets/readme-cover.png"
+    },
+    {
+      "title": "Codeforces Analysis",
+      "desc": "A website that analyzes any Codeforces profile — ratings, solved problems and progress at a glance. Built with the help of AI.",
+      "icon": "si:codeforces",
+      "tags": [
+        "Web",
+        "Codeforces"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/codeforces_analysis",
+      "live": "https://yeamin-talukder.github.io/codeforces_analysis/",
+      "featured": false,
+      "banner": ""
     },
     {
       "title": "Current-Detection",
@@ -214,7 +260,8 @@ window.PORTFOLIO = {
       ],
       "github": "https://github.com/Yeamin-Talukder/Current-Detection",
       "live": "",
-      "featured": false
+      "featured": false,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Current-Detection@main/assets/banner.svg"
     },
     {
       "title": "Chess App",
@@ -226,7 +273,8 @@ window.PORTFOLIO = {
       ],
       "github": "https://github.com/Yeamin-Talukder/Chess-app",
       "live": "",
-      "featured": false
+      "featured": false,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Chess-app@main/assets/header.svg"
     },
     {
       "title": "NFC-HUB",
@@ -237,8 +285,9 @@ window.PORTFOLIO = {
         "Web"
       ],
       "github": "https://github.com/Yeamin-Talukder/NFC-HUB",
-      "live": "",
-      "featured": false
+      "live": "https://nfc-hub.infinityfree.me/",
+      "featured": false,
+      "banner": ""
     },
     {
       "title": "Yeamin Chess Bot",
@@ -250,7 +299,8 @@ window.PORTFOLIO = {
       ],
       "github": "https://github.com/Yeamin-Talukder/Yeamin-chess-bot",
       "live": "https://yeamin-chess-bot.netlify.app/",
-      "featured": true
+      "featured": true,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Yeamin-chess-bot@main/assets/landing_new.png"
     }
   ],
   "achievements": [
@@ -353,7 +403,7 @@ window.PORTFOLIO = {
     },
     {
       "label": "Codeforces",
-      "icon": "fas fa-code",
+      "icon": "si:codeforces",
       "url": "https://codeforces.com/profile/YH_AM-IN",
       "handle": "YH_AM-IN"
     },
@@ -391,7 +441,7 @@ window.PORTFOLIO = {
     {
       "id": "about",
       "label": "About",
-      "icon": "fas fa-user-astronaut",
+      "icon": "fas fa-user",
       "kicker": "About Me",
       "title": "Who I Am",
       "visible": true,
@@ -400,7 +450,7 @@ window.PORTFOLIO = {
     {
       "id": "skills",
       "label": "Skills",
-      "icon": "fas fa-meteor",
+      "icon": "fas fa-code",
       "kicker": "Core Skills",
       "title": "What I Know",
       "visible": true,
@@ -409,8 +459,8 @@ window.PORTFOLIO = {
     {
       "id": "stats",
       "label": "Stats",
-      "icon": "fas fa-satellite-dish",
-      "kicker": "Live Telemetry",
+      "icon": "fas fa-chart-simple",
+      "kicker": "Live Data",
       "title": "My Stats",
       "visible": true,
       "tab": false
@@ -418,7 +468,7 @@ window.PORTFOLIO = {
     {
       "id": "projects",
       "label": "Projects",
-      "icon": "fas fa-rocket",
+      "icon": "fas fa-folder-open",
       "kicker": "Work",
       "title": "Featured Projects",
       "visible": true,
@@ -445,7 +495,7 @@ window.PORTFOLIO = {
     {
       "id": "contact",
       "label": "Contact",
-      "icon": "fas fa-paper-plane",
+      "icon": "fas fa-envelope",
       "kicker": "Let's Connect",
       "title": "Contact",
       "visible": true,
@@ -453,6 +503,6 @@ window.PORTFOLIO = {
     }
   ],
   "footer": {
-    "text": "Crafted with passion & caffeine, somewhere in orbit."
+    "text": "Crafted with passion & caffeine."
   }
 };

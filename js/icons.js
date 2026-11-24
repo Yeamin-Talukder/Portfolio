@@ -1,10 +1,14 @@
-/* Curated Font Awesome 6 (free) icons for the admin icon picker. */
+/* Icons for the admin picker: Font Awesome 6 (free) classes + Simple Icons brand logos ("si:slug"). */
 window.ICON_LIST = [
-    // space & theme
-    "fas fa-rocket", "fas fa-user-astronaut", "fas fa-meteor", "fas fa-satellite", "fas fa-satellite-dish",
-    "fas fa-star", "fas fa-moon", "fas fa-sun", "fas fa-globe", "fas fa-earth-americas", "fas fa-circle-nodes",
-    "fas fa-atom", "fas fa-infinity", "fas fa-compass", "fas fa-wand-magic-sparkles", "fas fa-gem",
+    // brand logos (Simple Icons) — coding platforms & languages Font Awesome lacks
+    "si:codeforces", "si:leetcode", "si:codechef", "si:hackerrank", "si:geeksforgeeks", "si:kaggle",
+    "si:cplusplus", "si:c", "si:python", "si:javascript", "si:typescript", "si:kotlin", "si:openjdk", "si:go",
+    "si:rust", "si:dart", "si:flutter", "si:php", "si:mysql", "si:postgresql", "si:mongodb", "si:firebase",
+    "si:react", "si:nextdotjs", "si:nodedotjs", "si:express", "si:tailwindcss", "si:bootstrap", "si:git",
+    "si:github", "si:linux", "si:docker", "si:figma", "si:adobephotoshop", "si:adobeillustrator", "si:netlify",
+    "si:vercel", "si:chessdotcom",
     // general
+    "fas fa-star", "fas fa-globe", "fas fa-circle-nodes", "fas fa-compass", "fas fa-gem",
     "fas fa-house", "fas fa-user", "fas fa-id-card", "fas fa-user-tie", "fas fa-users", "fas fa-handshake",
     "fas fa-heart", "fas fa-fire", "fas fa-bolt", "fas fa-lightbulb", "fas fa-brain", "fas fa-puzzle-piece",
     "fas fa-flag", "fas fa-clock", "fas fa-calendar", "fas fa-location-dot", "fas fa-map", "fas fa-mountain",
@@ -27,7 +31,7 @@ window.ICON_LIST = [
     // contact & actions
     "fas fa-envelope", "fas fa-phone", "fas fa-paper-plane", "fas fa-comments", "fas fa-link", "fas fa-rss",
     "fas fa-download", "fas fa-file-arrow-down", "fas fa-arrow-right", "fas fa-arrow-up-right-from-square",
-    "fas fa-play", "fas fa-eye",
+    "fas fa-play", "fas fa-eye", "fas fa-folder", "fas fa-pen-to-square",
     // brands — social
     "fab fa-github", "fab fa-gitlab", "fab fa-linkedin-in", "fab fa-linkedin", "fab fa-facebook-f", "fab fa-instagram",
     "fab fa-x-twitter", "fab fa-twitter", "fab fa-youtube", "fab fa-discord", "fab fa-telegram", "fab fa-whatsapp",

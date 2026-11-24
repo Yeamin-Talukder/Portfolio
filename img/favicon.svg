@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a2e"/><stop offset="1" stop-color="#0d0d0f"/></linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0" r="0.95"><stop offset="0" stop-color="#ffffff" stop-opacity="0.11"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  <linearGradient id="yg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4d4d8"/></linearGradient>
+  <filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="0.36" stdDeviation="0.46" flood-color="#000" flood-opacity="0.55"/></filter>
+</defs>
+  <rect width="32" height="32" rx="7.20" fill="url(#bg)"/>
+  
+  <rect width="32" height="32" rx="7.20" fill="url(#glow)"/>
+  <rect x="0.5" y="0.5" width="31.0" height="31.0" rx="6.70" fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1.0"/>
+  <g transform="translate(1.457 3.982) scale(0.2404)"><path d="M79.76 10.00 H107.76 M56.67 50.00 H78.67 M33.57 90.00 H61.57" fill="none" stroke="#a1a1aa" stroke-width="12.0" stroke-linecap="round"/><path d="M14.00 10.00 L37.09 50.00 M60.19 10.00 L14.00 90.00" fill="none" stroke="#ffffff" stroke-width="13.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

@@ -22,8 +22,12 @@ js/starfield.js       animated star background (shared by site + admin)
 js/admin.js           admin panel logic
 js/icons.js           icon list for the admin icon picker
 uploads/              files uploaded from the admin panel (created on first upload)
+js/seo.js             builds meta tags, structured data & a crawlable copy of the content
+tools/build-seo.js    regenerates the SEO blocks in index.html + sitemap.xml locally
+img/logo.svg          logo (app icon); img/favicon.svg = small-size favicon
 manifest.webmanifest  PWA manifest
 sw.js                 network-first service worker (offline fallback)
+robots.txt, sitemap.xml, 404.html, _headers   SEO / Netlify files
 ```
 
 ## Admin panel
@@ -45,6 +49,19 @@ Open `/admin.html` (e.g. https://yh-am-in.netlify.app/admin.html).
 Drafts auto-save in your browser, so you can close the tab and continue later.
 **Offline mode** (no token) lets you edit and preview, then download `content.js` or a
 JSON backup to apply manually.
+
+## SEO
+
+`index.html` contains generated blocks between `<!-- SEO:HEAD:* -->` and `<!-- SEO:BODY:* -->`
+(meta tags, Open Graph, JSON-LD `ProfilePage`/`Person`, and a plain-HTML copy of the content for
+crawlers). Publishing from the admin regenerates them and `sitemap.xml` automatically. If you edit
+`data/content.js` by hand, run:
+
+```bash
+node tools/build-seo.js
+```
+
+Google Search Console is verified with `google37d6bfa5bc028c76.html`; submit `sitemap.xml` there.
 
 ## Local development
 

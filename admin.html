@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#05060f">
-    <title>Mission Control — Portfolio Admin</title>
-    <link rel="icon" href="img/icon.png" type="image/png">
+    <meta name="theme-color" content="#09090b">
+    <title>Portfolio Admin</title>
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" sizes="48x48">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,10 +22,10 @@
     <main class="login" id="login" hidden>
         <div class="login-card">
             <div class="login-brand">
-                <span class="brand-mark"><i></i></span>
-                <span>Mission Control</span>
+                <span class="brand-mark"><img src="img/favicon.svg" alt="" width="34" height="34"></span>
+                <span>Portfolio Admin</span>
             </div>
-            <h1>Welcome back, commander.</h1>
+            <h1>Welcome back.</h1>
             <p class="login-sub">Connect your GitHub repository to edit and publish your portfolio. Changes go live after Netlify redeploys (about a minute).</p>
 
             <form id="loginForm" class="login-form" autocomplete="off">
@@ -49,7 +50,7 @@
 
                 <label class="check"><input type="checkbox" id="lgRemember" checked><span>Remember on this device</span></label>
                 <p class="form-error" id="lgError" hidden></p>
-                <button class="btn btn-primary btn-block" type="submit" id="lgSubmit"><span>Connect &amp; launch</span><i class="fas fa-rocket"></i></button>
+                <button class="btn btn-primary btn-block" type="submit" id="lgSubmit"><span>Connect</span><i class="fas fa-arrow-right"></i></button>
             </form>
 
             <div class="divider"><span>or</span></div>
@@ -71,8 +72,8 @@
     <div class="app" id="app" hidden>
         <aside class="sidebar" id="sidebar">
             <div class="side-brand">
-                <span class="brand-mark"><i></i></span>
-                <div><strong>Mission Control</strong><small>Portfolio admin</small></div>
+                <span class="brand-mark"><img src="img/favicon.svg" alt="" width="34" height="34"></span>
+                <div><strong>Portfolio Admin</strong><small>Content manager</small></div>
                 <button class="icon-btn side-close" data-act="close-side" aria-label="Close menu"><i class="fas fa-xmark"></i></button>
             </div>
             <nav class="side-nav" id="sideNav"></nav>
@@ -139,6 +140,7 @@
     <script src="data/content.js"></script>
     <script src="js/starfield.js"></script>
     <script src="js/icons.js"></script>
+    <script src="js/seo.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>

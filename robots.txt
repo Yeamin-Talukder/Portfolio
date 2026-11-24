@@ -1,0 +1,5 @@
+# https://yh-am-in.netlify.app/robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://yh-am-in.netlify.app/sitemap.xml

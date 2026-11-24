@@ -4,7 +4,7 @@
 ========================================================= */
 (function () {
     const DENSITY = { low: 0.5, normal: 1, high: 1.7 };
-    const TINTS = ["255,255,255", "255,255,255", "255,255,255", "190,210,255", "255,226,190", "200,190,255"];
+    const TINTS = ["255,255,255", "255,255,255", "244,244,245", "228,228,231", "212,212,216"];
     const LAYERS = [
         { share: 0.62, size: [0.3, 0.9], speed: 0.015, alpha: [0.25, 0.6] },
         { share: 0.28, size: [0.6, 1.3], speed: 0.04,  alpha: [0.4, 0.85] },
@@ -111,8 +111,8 @@
             const ty = m.y - (m.vy / mag) * m.len;
             const g = ctx.createLinearGradient(m.x, m.y, tx, ty);
             g.addColorStop(0, `rgba(255,255,255,${0.9 * fade})`);
-            g.addColorStop(0.3, `rgba(180,200,255,${0.35 * fade})`);
-            g.addColorStop(1, "rgba(180,200,255,0)");
+            g.addColorStop(0.3, `rgba(228,228,231,${0.35 * fade})`);
+            g.addColorStop(1, "rgba(228,228,231,0)");
             ctx.strokeStyle = g;
             ctx.lineWidth = 1.4;
             ctx.lineCap = "round";

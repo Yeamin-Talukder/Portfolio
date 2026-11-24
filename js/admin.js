@@ -1,5 +1,5 @@
 /* =========================================================
-   MISSION CONTROL — portfolio admin panel
+   PORTFOLIO ADMIN — content manager
    - Edits everything in data/content.js through schema-driven forms
    - Live preview via index.html?preview (postMessage + localStorage draft)
    - Publishes to GitHub as ONE commit (Git Data API); Netlify redeploys
@@ -63,6 +63,17 @@
         for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
         return new TextDecoder().decode(bytes);
     };
+    const SI_CDN = "https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/";
+    const siSlug = cls => { const m = String(cls || "").match(/^si:([a-z0-9]+)$/i); return m ? m[1].toLowerCase() : null; };
+    const iconTag = (cls, attrs = "") => {
+        const slug = siSlug(cls);
+        return slug ? `<i class="si" style="--si:url('${SI_CDN}${slug}.svg')"${attrs}></i>` : `<i class="${esc(cls)}"${attrs}></i>`;
+    };
+    function setIcon(el, cls) {
+        const slug = siSlug(cls);
+        if (slug) { el.className = "si"; el.style.setProperty("--si", `url('${SI_CDN}${slug}.svg')`); }
+        else { el.className = cls; el.style.removeProperty("--si"); }
+    }
     const serialize = obj => `window.PORTFOLIO = ${JSON.stringify(obj, null, 2)};\n`;
     function parseContent(text) {
         const a = text.indexOf("{"), b = text.lastIndexOf("}");
@@ -116,20 +127,21 @@
         { value: "github.stars", label: "Live · GitHub stars" }
     ];
     const THEME_PRESETS = [
-        { name: "Nebula", accent: "#8b7bff", accent2: "#38d6f5", sun: "#ffb547" },
+        { name: "Graphite", accent: "#d4d4d8", accent2: "#a1a1aa", sun: "#e4e4e7" },
+        { name: "Violet", accent: "#8b7bff", accent2: "#38d6f5", sun: "#ffb547" },
         { name: "Aurora", accent: "#2ecc71", accent2: "#38d6f5", sun: "#ffd166" },
         { name: "Mars", accent: "#ff6b6b", accent2: "#ffa36b", sun: "#ffd166" },
         { name: "Neptune", accent: "#4f8cff", accent2: "#38d6f5", sun: "#a5f3fc" },
         { name: "Saturn", accent: "#e0b354", accent2: "#f0d9a0", sun: "#ff9f43" },
-        { name: "Pulsar", accent: "#f472b6", accent2: "#a78bfa", sun: "#fde68a" }
+        { name: "Rose", accent: "#f472b6", accent2: "#a78bfa", sun: "#fde68a" }
     ];
 
     const PAGES = [
         { id: "dashboard", label: "Dashboard", icon: "fas fa-gauge-high", desc: "Overview of your portfolio and recent activity.", render: renderDashboard },
         { group: "Content" },
         {
-            id: "profile", label: "Profile & Hero", icon: "fas fa-user-astronaut", preview: "home",
-            desc: "Your name, intro, avatar (the sun of your solar system) and résumé.",
+            id: "profile", label: "Profile & Hero", icon: "fas fa-user", preview: "home",
+            desc: "Your name, intro, avatar and résumé.",
             fields: [
                 F.group("Identity", [
                     F.text("profile.firstName", "First name", { half: true }),
@@ -164,12 +176,12 @@
             ]
         },
         {
-            id: "orbit", label: "Orbit Planets", icon: "fas fa-circle-nodes", preview: "home",
-            desc: "The planets orbiting your avatar in the hero. They spread across three orbits automatically — 6 to 12 looks best.",
+            id: "orbit", label: "Hero Skills", icon: "fas fa-circle-nodes", preview: "home",
+            desc: "Skill logos on the 3D sphere around your avatar. They spread evenly on their own — 8 to 14 looks best.",
             fields: [
-                F.list("orbit", "Planets", {
-                    addLabel: "Add planet", titleKey: "label", iconOf: i => i.icon,
-                    newItem: () => ({ label: "New skill", icon: "fas fa-star", short: "" }),
+                F.list("orbit", "Sphere logos", {
+                    addLabel: "Add item", titleKey: "label", iconOf: i => i.icon,
+                    newItem: () => ({ label: "New skill", icon: "fas fa-code", short: "" }),
                     fields: [
                         F.text("label", "Name", { half: true, hint: "Shown on hover." }),
                         F.icon("icon", "Icon", { half: true }),
@@ -203,7 +215,7 @@
             ]
         },
         {
-            id: "skills", label: "Skills", icon: "fas fa-meteor", preview: "skills",
+            id: "skills", label: "Skills", icon: "fas fa-code", preview: "skills",
             desc: "Skill categories and their items.",
             fields: [
                 F.list("skills", "Categories", {
@@ -214,7 +226,7 @@
             ]
         },
         {
-            id: "stats", label: "Live Stats", icon: "fas fa-satellite-dish", preview: "stats",
+            id: "stats", label: "Live Stats", icon: "fas fa-chart-simple", preview: "stats",
             desc: "Handles used to pull live data from Codeforces and GitHub. Leave both empty to hide the section.",
             fields: [
                 F.group("Integrations", [
@@ -224,15 +236,16 @@
             ]
         },
         {
-            id: "projects", label: "Projects", icon: "fas fa-rocket", preview: "projects",
+            id: "projects", label: "Projects", icon: "fas fa-folder-open", preview: "projects",
             desc: "Your work. Tags become filter chips automatically.",
             fields: [
                 F.list("projects", "Projects", {
                     addLabel: "Add project", titleKey: "title", iconOf: i => i.icon, subOf: i => (i.tags || []).join(" · "),
-                    newItem: () => ({ title: "New project", desc: "", icon: "fas fa-rocket", tags: [], github: "", live: "", featured: false }),
+                    newItem: () => ({ title: "New project", desc: "", icon: "fas fa-folder", tags: [], github: "", live: "", featured: false }),
                     fields: [
                         F.text("title", "Title", { half: true }),
                         F.icon("icon", "Icon", { half: true }),
+                        F.image("banner", "Banner / screenshot", { wide: true, readme: true, hint: "Shown inside the window on the card. “From README” grabs the banner from the project's GitHub README." }),
                         F.area("desc", "Description", { rows: 3, hint: MD_HINT }),
                         F.strings("tags", "Tags"),
                         F.url("github", "Source code URL", { half: true }),
@@ -323,14 +336,17 @@
                 })
             ]
         },
-        { id: "theme", label: "Theme & Motion", icon: "fas fa-palette", preview: "home", desc: "Colors of your universe and how much it moves.", render: renderTheme },
+        { id: "theme", label: "Theme & Motion", icon: "fas fa-palette", preview: "home", desc: "Accent color, background stars and motion. The site itself stays dark gray; the accent is used for small highlights.", render: renderTheme },
         {
             id: "seo", label: "SEO & Footer", icon: "fas fa-magnifying-glass", preview: null,
             desc: "Search engine title/description and the footer line.",
             fields: [
                 F.group("Search & sharing", [
-                    F.text("meta.title", "Page title", { hint: "Shown in the browser tab and Google." }),
-                    F.area("meta.description", "Meta description", { rows: 3, hint: "About 150 characters." })
+                    F.text("meta.title", "Page title", { hint: "Shown in the browser tab and as the Google result title. Keep it under ~60 characters." }),
+                    F.area("meta.description", "Meta description", { rows: 3, hint: "The snippet under your Google result. Aim for 120–158 characters." }),
+                    F.text("meta.jobTitle", "Job title (for Google)", { half: true, placeholder: "Software Developer" }),
+                    F.url("meta.siteUrl", "Site URL (canonical)", { half: true, hint: "Your live address. Used for Google, the sitemap and link previews." }),
+                    F.image("meta.image", "Link preview image", { wide: true, hint: "Shown when your link is shared on WhatsApp, LinkedIn, Facebook, X… Use 1200×630." })
                 ]),
                 F.group("Footer", [F.text("footer.text", "Footer text")])
             ]
@@ -387,7 +403,7 @@
             case "icon":
                 return `<div class="field${half}">${label(f)}
                     <div class="icon-input">
-                        <button type="button" class="icon-preview" data-act="pick-icon" data-path="${esc(path)}" title="Choose icon"><i class="${esc(v || "fas fa-icons")}" data-icon-for="${esc(path)}"></i></button>
+                        <button type="button" class="icon-preview" data-act="pick-icon" data-path="${esc(path)}" title="Choose icon">${iconTag(v || "fas fa-icons", ` data-icon-for="${esc(path)}"`)}</button>
                         <input class="input mono" ${bind} value="${esc(v || "")}" placeholder="fas fa-star" spellcheck="false">
                         <button type="button" class="input-btn" data-act="pick-icon" data-path="${esc(path)}" title="Browse icons"><i class="fas fa-table-cells"></i></button>
                     </div>${hint(f)}</div>`;
@@ -396,7 +412,7 @@
                 const isImg = f.type === "image";
                 const pending = isData(v);
                 const thumb = isImg
-                    ? `<div class="media-thumb">${v ? `<img src="${esc(uploadCache[v] || v)}" alt="">` : '<i class="far fa-image"></i>'}</div>`
+                    ? `<div class="media-thumb${f.wide ? " wide" : ""}">${v ? `<img src="${esc(uploadCache[v] || v)}" alt="">` : '<i class="far fa-image"></i>'}</div>`
                     : `<div class="media-thumb file"><i class="far fa-file-lines"></i></div>`;
                 const info = pending
                     ? `<b>New ${isImg ? "image" : "file"} · ${fmtBytes(dataUrlBytes(v))}</b><small>Uploads to GitHub when you publish.</small>`
@@ -409,6 +425,7 @@
                             <label class="btn btn-ghost btn-sm"><i class="fas fa-upload"></i><span>Upload</span>
                                 <input type="file" hidden data-upload="${esc(path)}" data-kind="${f.type}" accept="${esc(f.accept || (isImg ? "image/*" : "*/*"))}">
                             </label>
+                            ${f.readme ? `<button type="button" class="btn btn-ghost btn-sm" data-act="readme-banner" data-path="${esc(path)}" title="Find the banner in the GitHub README"><i class="fab fa-github"></i><span>From README</span></button>` : ""}
                             ${v ? `<button type="button" class="icon-btn sm danger" data-act="clear" data-path="${esc(path)}" title="Remove"><i class="far fa-trash-can"></i></button>` : ""}
                         </div>
                     </div>
@@ -450,7 +467,7 @@
                 <div class="li-head">
                     <span class="li-handle" draggable="true" title="Drag to reorder"><i class="fas fa-grip-vertical"></i></span>
                     <button type="button" class="li-toggle" data-act="toggle" data-path="${esc(ip)}">
-                        ${ic ? `<span class="li-icon"><i class="${esc(ic)}"></i></span>` : `<span class="li-num">${i + 1}</span>`}
+                        ${ic ? `<span class="li-icon">${iconTag(ic)}</span>` : `<span class="li-num">${i + 1}</span>`}
                         <span class="li-text"><b>${esc(itemTitle(f, item, i))}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span>
                         <i class="fas fa-chevron-down li-caret"></i>
                     </button>
@@ -469,7 +486,7 @@
                 <div><h3>${esc(f.label)}</h3><small>${arr.length} ${arr.length === 1 ? "item" : "items"}${arr.length > 1 ? " · drag to reorder" : ""}</small></div>
                 ${f.fixed ? "" : `<button type="button" class="btn btn-ghost btn-sm" data-act="add" data-path="${esc(path)}"><i class="fas fa-plus"></i><span>${esc(f.addLabel || "Add")}</span></button>`}
             </div>
-            <div class="list-items">${items || `<div class="empty"><i class="fas fa-satellite"></i><p>Nothing here yet.</p>${f.fixed ? "" : `<button type="button" class="btn btn-primary btn-sm" data-act="add" data-path="${esc(path)}"><i class="fas fa-plus"></i><span>${esc(f.addLabel || "Add")}</span></button>`}</div>`}</div>
+            <div class="list-items">${items || `<div class="empty"><i class="far fa-folder-open"></i><p>Nothing here yet.</p>${f.fixed ? "" : `<button type="button" class="btn btn-primary btn-sm" data-act="add" data-path="${esc(path)}"><i class="fas fa-plus"></i><span>${esc(f.addLabel || "Add")}</span></button>`}</div>`}</div>
         </section>`;
     }
 
@@ -487,12 +504,12 @@
         const s = state, p = s.profile || {};
         const out = [];
         const add = (ok, text, go) => out.push({ ok, text, go });
-        add(!!p.avatar, p.avatar ? "Avatar is set" : "Add an avatar — it's the sun of your solar system", "profile");
+        add(!!p.avatar, p.avatar ? "Avatar is set" : "Add an avatar — it sits at the center of the hero", "profile");
         add(!!(p.bio && p.bio.length > 30), p.bio ? "Hero bio looks good" : "Write a short hero bio", "profile");
         add(!!p.email, p.email ? "Email is set" : "Add an email so people can reach you", "profile");
         add(!!p.resume, p.resume ? "Résumé is attached" : "Attach your résumé / CV", "profile");
         const orbitN = (s.orbit || []).length;
-        add(orbitN >= 3 && orbitN <= 14, `${orbitN} orbit planets${orbitN < 3 ? " — add a few more" : orbitN > 14 ? " — consider fewer for a cleaner look" : ""}`, "orbit");
+        add(orbitN >= 3 && orbitN <= 14, `${orbitN} hero skill logos${orbitN < 3 ? " — add a few more" : orbitN > 14 ? " — consider fewer for a cleaner look" : ""}`, "orbit");
         const noLink = (s.projects || []).filter(x => !x.github && !x.live).length;
         add(!noLink, noLink ? `${noLink} project(s) have no links` : "Every project has a link", "projects");
         const hidden = (s.sections || []).filter(x => x.visible === false).length;
@@ -517,13 +534,13 @@
                     <a class="btn btn-ghost btn-sm" href="${esc(conn.siteUrl || "index.html")}" target="_blank" rel="noopener"><i class="fas fa-globe"></i><span>View site</span></a>
                 </div>
             </div>
-            <div class="mini-solar" aria-hidden="true"><span class="ms-sun">${s.profile && s.profile.avatar ? `<img src="${esc(uploadCache[s.profile.avatar] || s.profile.avatar)}" alt="">` : ""}</span><span class="ms-orbit o1"><i></i></span><span class="ms-orbit o2"><i></i></span><span class="ms-orbit o3"><i></i></span></div>
+            ${s.profile && s.profile.avatar ? `<img class="hero-avatar" src="${esc(uploadCache[s.profile.avatar] || s.profile.avatar)}" alt="">` : ""}
         </section>
         <div class="stat-grid">
-            ${statCard("fas fa-rocket", (s.projects || []).length, "Projects", "projects")}
+            ${statCard("fas fa-folder-open", (s.projects || []).length, "Projects", "projects")}
             ${statCard("fas fa-trophy", (s.achievements || []).length, "Achievements", "achievements")}
-            ${statCard("fas fa-meteor", skillCount, "Skills", "skills")}
-            ${statCard("fas fa-circle-nodes", (s.orbit || []).length, "Planets", "orbit")}
+            ${statCard("fas fa-code", skillCount, "Skills", "skills")}
+            ${statCard("fas fa-circle-nodes", (s.orbit || []).length, "Hero skills", "orbit")}
             ${statCard("fas fa-share-nodes", (s.socials || []).length, "Social links", "contact")}
             ${statCard("fas fa-cloud-arrow-up", pending, "Pending uploads", null)}
         </div>
@@ -570,12 +587,12 @@
         ${fieldHTML(F.group("Custom colors", [
             F.color("theme.accent", "Accent", { half: true }),
             F.color("theme.accent2", "Secondary", { half: true }),
-            F.color("theme.sun", "Sun glow", { half: true })
+            F.color("theme.sun", "Tertiary", { half: true })
         ]), "")}
-        ${fieldHTML(F.group("Space & motion", [
+        ${fieldHTML(F.group("Background & motion", [
             F.select("theme.stars", "Star density", [{ value: "low", label: "Low (calm)" }, { value: "normal", label: "Normal" }, { value: "high", label: "High (dense)" }], { half: true }),
             F.toggle("theme.shootingStars", "Shooting stars", { half: true }),
-            F.toggle("theme.motion", "Animations", { hint: "Turn off to stop orbits, typing and reveal animations." })
+            F.toggle("theme.motion", "Animations", { hint: "Turn off to stop the sphere, typing and reveal animations." })
         ]), "")}`;
     }
 
@@ -740,7 +757,7 @@
         setPath(state, path, v);
         $$(`[data-bind="${CSS.escape(path)}"]`, editor).forEach(o => { if (o !== el && o.type !== "checkbox") o.value = v; });
         const ic = $(`[data-icon-for="${CSS.escape(path)}"]`, editor);
-        if (ic) ic.className = v || "fas fa-icons";
+        if (ic) setIcon(ic, v || "fas fa-icons");
         // live-update list item titles
         const li = el.closest(".list-item");
         if (li) {
@@ -753,7 +770,7 @@
                 if (sub && !small) { small = document.createElement("small"); $(".li-text", li).appendChild(small); }
                 if (small) small.textContent = sub;
                 const icEl = $(".li-icon i", li);
-                if (icEl && f.iconOf) icEl.className = f.iconOf(item) || "";
+                if (icEl && f.iconOf) setIcon(icEl, f.iconOf(item) || "");
             }
         }
         changed(el.hasAttribute("data-rerender"));
@@ -976,6 +993,21 @@
                 changed(true);
                 break;
             case "pick-icon": openIconPicker(path); break;
+            case "readme-banner": {
+                const item = getPath(state, path.split(".").slice(0, -1).join("."));
+                btn.classList.add("is-busy");
+                try {
+                    const url = await findReadmeBanner(item && item.github);
+                    setPath(state, path, url);
+                    changed(true);
+                    toast("Banner found in the README", "success");
+                } catch (err) {
+                    toast(esc(err.message), "warn");
+                } finally {
+                    btn.classList.remove("is-busy");
+                }
+                break;
+            }
             case "preset": {
                 const p = THEME_PRESETS.find(x => x.name === btn.dataset.name);
                 if (!p) return;
@@ -1168,19 +1200,19 @@
         const current = getPath(state, path) || "";
         const grid = q => window.ICON_LIST
             .filter(c => !q || c.toLowerCase().includes(q.toLowerCase().replace(/\s+/g, "-")))
-            .map(c => `<button class="icon-cell${c === current ? " is-on" : ""}" data-icon="${c}" title="${c}"><i class="${c}"></i><span>${c.replace(/^fa[bsr] fa-/, "")}</span></button>`)
+            .map(c => `<button class="icon-cell${c === current ? " is-on" : ""}" data-icon="${c}" title="${c}">${iconTag(c)}<span>${c.replace(/^fa[bsr] fa-/, "").replace(/^si:/, "")}</span></button>`)
             .join("") || '<p class="muted pad">No match — type a custom class below.</p>';
         openModal(`
             <div class="modal-head"><span class="modal-icon"><i class="fas fa-icons"></i></span><h3>Choose an icon</h3>
                 <button class="icon-btn sm" data-modal-close aria-label="Close"><i class="fas fa-xmark"></i></button></div>
-            <div class="input-wrap"><i class="fas fa-magnifying-glass"></i><input class="input" id="iconSearch" placeholder="Search icons (github, code, rocket…)" autofocus></div>
+            <div class="input-wrap"><i class="fas fa-magnifying-glass"></i><input class="input" id="iconSearch" placeholder="Search icons (github, codeforces, python…)" autofocus></div>
             <div class="icon-grid" id="iconGrid">${grid("")}</div>
             <div class="icon-custom">
-                <input class="input mono" id="iconCustom" value="${esc(current)}" placeholder="Any Font Awesome class, e.g. fab fa-react">
+                <input class="input mono" id="iconCustom" value="${esc(current)}" placeholder="fab fa-react  or  si:codeforces">
                 <button class="btn btn-ghost btn-sm" id="iconNone">None</button>
                 <button class="btn btn-primary btn-sm" id="iconApply">Use</button>
             </div>
-            <p class="hint">Browse all at <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" rel="noopener">fontawesome.com</a> (free icons).</p>`,
+            <p class="hint">UI icons: <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" rel="noopener">Font Awesome</a> · brand logos: <a href="https://simpleicons.org" target="_blank" rel="noopener">Simple Icons</a> (use <code>si:slug</code>).</p>`,
         card => {
             card.classList.add("wide");
             $("#iconSearch", card).addEventListener("input", e => { $("#iconGrid", card).innerHTML = grid(e.target.value.trim()); });
@@ -1207,6 +1239,39 @@
         $("#toasts").appendChild(t);
         requestAnimationFrame(() => t.classList.add("is-on"));
         setTimeout(() => { t.classList.remove("is-on"); setTimeout(() => t.remove(), 400); }, ms);
+    }
+
+    /* README banner finder: first non-badge image in the repo README, served via jsDelivr
+       (raw.githubusercontent.com serves SVGs as text, so browsers won't render them) */
+    async function findReadmeBanner(repoUrl) {
+        const m = String(repoUrl || "").match(/github\.com\/([^/]+)\/([^/#?]+)/i);
+        if (!m) throw new Error("Add the project's GitHub URL first.");
+        const owner = m[1], repo = m[2].replace(/\.git$/, "");
+        const headers = { Accept: "application/vnd.github+json" };
+        if (conn && conn.token) headers.Authorization = `Bearer ${conn.token}`;
+        const infoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers });
+        if (!infoRes.ok) throw new Error(`Couldn't open ${owner}/${repo} on GitHub.`);
+        const branch = (await infoRes.json()).default_branch || "main";
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, { headers: Object.assign({}, headers, { Accept: "application/vnd.github.raw" }) });
+        if (!res.ok) throw new Error("This repo has no README.");
+        const text = await res.text();
+        const found = [
+            ...[...text.matchAll(/!\[[^\]]*\]\(\s*<?([^)\s>]+)/g)].map(x => [x.index, x[1]]),
+            ...[...text.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].map(x => [x.index, x[1]])
+        ].sort((a, b) => a[0] - b[0]).map(x => x[1]);
+        const usable = found.filter(s =>
+            !/shields\.io|hits\.sh|visitor-badge|badgen|komarev|github-readme-stats|readme-typing-svg|\/badge/i.test(s) &&
+            !/favicon|logo|icon/i.test(s.split("?")[0].split("/").pop()));
+        const pick = usable.find(s => /banner|cover|header|hero|preview|screenshot|landing|showcase|demo/i.test(s)) || usable[0];
+        if (!pick) throw new Error("No banner image found in the README.");
+        let x;
+        if ((x = pick.match(/^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/i)))
+            return `https://cdn.jsdelivr.net/gh/${x[1]}/${x[2]}@${x[3]}/${x[4]}`;
+        if ((x = pick.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/(?:blob|raw)\/([^/]+)\/([^?#]+)/i)))
+            return `https://cdn.jsdelivr.net/gh/${x[1]}/${x[2]}@${x[3]}/${x[4]}`;
+        if (/^https?:\/\//i.test(pick)) return pick;
+        const rel = pick.replace(/^\.?\//, "").split(/[?#]/)[0];
+        return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${rel}`;
     }
 
     /* =====================================================
@@ -1261,7 +1326,7 @@
     };
 
     function changedSections() {
-        const names = { profile: "Profile", orbit: "Orbit planets", about: "About", numbers: "Number tiles", skills: "Skills", integrations: "Live stats", projects: "Projects", achievements: "Achievements", education: "Education", socials: "Socials", contact: "Contact", sections: "Sections", theme: "Theme", meta: "SEO", footer: "Footer" };
+        const names = { profile: "Profile", orbit: "Hero skills", about: "About", numbers: "Number tiles", skills: "Skills", integrations: "Live stats", projects: "Projects", achievements: "Achievements", education: "Education", socials: "Socials", contact: "Contact", sections: "Sections", theme: "Theme", meta: "SEO", footer: "Footer" };
         const keys = new Set([...Object.keys(state), ...Object.keys(published)]);
         return [...keys].filter(k => !same(state[k], published[k])).map(k => names[k] || k);
     }
@@ -1280,7 +1345,7 @@
             <label class="field"><span class="field-label">Commit message</span><input class="input" id="commitMsg" value="Update ${esc(changes.slice(0, 3).join(", ").toLowerCase())} via admin" autofocus></label>
             <div class="modal-actions">
                 <button class="btn btn-ghost btn-sm" data-modal-close>Cancel</button>
-                <button class="btn btn-primary btn-sm" id="doPublish"><i class="fas fa-rocket"></i><span>Publish now</span></button>
+                <button class="btn btn-primary btn-sm" id="doPublish"><i class="fas fa-cloud-arrow-up"></i><span>Publish now</span></button>
             </div>`, card => {
             const go = () => closeModal($("#commitMsg", card).value.trim() || "Update portfolio content via admin");
             $("#doPublish", card).addEventListener("click", go);
@@ -1317,6 +1382,19 @@
             });
             const contentText = serialize(out);
             files.push({ path: CONTENT_PATH, base64: utf8ToB64(contentText) });
+
+            // keep the static SEO (meta, structured data, crawlable copy) and sitemap in sync
+            if (window.PortfolioSEO) {
+                try {
+                    const now = new Date().toISOString();
+                    const idx = await gh(repoPath(`/contents/index.html?ref=${encodeURIComponent(conn.branch)}`));
+                    const html = window.PortfolioSEO.inject(b64ToUtf8(idx.content || ""), out, now);
+                    if (html) files.push({ path: "index.html", base64: utf8ToB64(html) });
+                    files.push({ path: "sitemap.xml", base64: utf8ToB64(window.PortfolioSEO.sitemap(out, now.slice(0, 10))) });
+                } catch (e) {
+                    toast("Published content, but couldn't refresh the SEO tags: " + esc(e.message), "warn", 6000);
+                }
+            }
 
             // One atomic commit with the Git Data API
             const ref = await gh(repoPath(`/git/ref/heads/${encodeURIComponent(conn.branch)}`));

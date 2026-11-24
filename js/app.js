@@ -32,11 +32,17 @@
         return u || "#";
     };
     const ext = u => /^https?:\/\//i.test(u) ? ' target="_blank" rel="noopener"' : "";
-    const icon = cls => cls ? `<i class="${esc(cls)}" aria-hidden="true"></i>` : "";
+    const SI_CDN = "https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/";
+    const icon = cls => {
+        if (!cls) return "";
+        const si = String(cls).match(/^si:([a-z0-9]+)$/i);
+        if (si) return `<i class="si" style="--si:url('${SI_CDN}${si[1].toLowerCase()}.svg')" aria-hidden="true"></i>`;
+        return `<i class="${esc(cls)}" aria-hidden="true"></i>`;
+    };
     const list = a => Array.isArray(a) ? a : [];
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const appMQ = window.matchMedia("(max-width: 768px)");
-    const vibrate = () => { try { navigator.vibrate && navigator.vibrate(8); } catch (e) { /* noop */ } };
+    const vibrate = () => { try { if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(8); } catch (e) { /* noop */ } };
 
     const app = $("#app");
     let VIEWS = [];
@@ -90,33 +96,147 @@
         ).join("");
     }
 
-    function renderSolar() {
+    /* Hero: interactive 3D "skill sphere" — logos on a slowly tumbling globe
+       around the avatar, with depth, spokes and a caption for the front logo. */
+    function renderSphere() {
         const items = list(C.orbit);
-        const rings = [[], [], []];
-        items.forEach((it, i) => rings[i % 3].push(it));
-        const conf = [
-            { dur: 26, dir: "normal", off: 20 },
-            { dur: 40, dir: "reverse", off: 70 },
-            { dur: 58, dir: "normal", off: 0 }
-        ];
-        const ringsHtml = rings.map((ring, r) => {
-            const planets = ring.map((it, k) => {
-                const a = conf[r].off + (360 / ring.length) * k;
-                const body = it.icon ? icon(it.icon) : `<b>${esc(it.short || (it.label || "").slice(0, 3))}</b>`;
-                return `<div class="planet" style="--a:${a.toFixed(1)}deg">
-                    <div class="planet-body" tabindex="0" aria-label="${esc(it.label)}">${body}<span class="planet-label">${esc(it.label)}</span></div>
-                </div>`;
-            }).join("");
-            return `<div class="orbit orbit-${r + 1}" style="--dur:${conf[r].dur}s;--dir:${conf[r].dir}">${planets}</div>`;
+        const nodes = items.map((it, i) => {
+            const body = it.icon ? icon(it.icon) : `<b>${esc(it.short || (it.label || "").slice(0, 3))}</b>`;
+            return `<button type="button" class="node" data-i="${i}" aria-label="${esc(it.label)}" title="${esc(it.label)}">${body}</button>`;
         }).join("");
-        return `<div class="solar" aria-hidden="false">
-            ${ringsHtml}
-            <div class="sun">
-                <span class="sun-corona"></span>
-                <span class="sun-ring"></span>
-                <img src="${esc(P().avatar || "img/avater.png")}" alt="${esc(fullName())}" class="sun-img">
+        const lines = items.map(() => '<line x1="0" y1="0" x2="0" y2="0"/>').join("");
+        return `<div class="sphere no-swipe" id="sphere">
+                <svg class="sphere-lines" viewBox="-50 -50 100 100" aria-hidden="true">${lines}</svg>
+                <div class="core">
+                    <span class="core-ring"></span><span class="core-arc"></span>
+                    <img src="${esc(P().avatar || "img/avatar.webp")}" alt="${esc(fullName())}" class="core-img">
+                </div>
+                ${nodes}
             </div>
-        </div>`;
+            ${items.length ? `<div class="sphere-caption" aria-live="polite"><span class="sc-dot"></span><span class="sc-text" id="sphereLabel">${esc(items[0].label)}</span></div>` : ""}`;
+    }
+
+    let sphereToken = 0;
+    function startSphere() {
+        const token = ++sphereToken;
+        const root = $("#sphere");
+        if (!root) return;
+        const nodes = $$(".node", root);
+        const lines = $$(".sphere-lines line", root);
+        const label = $("#sphereLabel");
+        const n = nodes.length;
+        if (!n) return;
+
+        // even spread on a unit sphere (Fibonacci lattice) — logos never collide
+        const pts = nodes.map((_, i) => {
+            const y = 1 - (i + 0.5) * (2 / n);
+            const r = Math.sqrt(1 - y * y);
+            const t = i * Math.PI * (3 - Math.sqrt(5));
+            return { x: Math.cos(t) * r, y, z: Math.sin(t) * r };
+        });
+        const rotate = (ax, ay) => {
+            const cx = Math.cos(ax), sx = Math.sin(ax), cy = Math.cos(ay), sy = Math.sin(ay);
+            pts.forEach(p => {
+                const x = p.x * cy - p.z * sy;
+                let z = p.x * sy + p.z * cy;
+                const y = p.y * cx - z * sx;
+                z = p.y * sx + z * cx;
+                p.x = x; p.y = y; p.z = z;
+            });
+        };
+        rotate(0.45, 0.3);
+
+        const animated = !(reducedMotion.matches || (C.theme || {}).motion === false);
+        const BASE_Y = 0.00022, BASE_X = 0.00005;      // rad per ms (~28s per turn + gentle tumble)
+        let vx = BASE_X, vy = BASE_Y, tx = BASE_X, ty = BASE_Y;
+        let hoverNode = -1, frontIdx = -1, drag = null, visible = true, last = performance.now();
+
+        function draw() {
+            const S = root.clientWidth;
+            if (!S) return;
+            const R = S * 0.42, coreR = S * 0.17;
+            let best = -2, fi = 0;
+            pts.forEach((p, i) => {
+                const d = (p.z + 1) / 2;                         // 0 = back, 1 = front
+                const px = p.x * R, py = p.y * R;
+                let o = 0.18 + 0.82 * d;
+                if (p.z > 0 && Math.hypot(px, py) < coreR * 1.05) o *= 0.4;   // don't hide the face
+                const el = nodes[i];
+                el.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0) scale(${(0.58 + 0.52 * d).toFixed(3)})`;
+                el.style.opacity = o.toFixed(3);
+                el.style.zIndex = p.z > 0 ? 3 : 1;
+                const ln = lines[i];
+                ln.setAttribute("x2", (px / S * 100).toFixed(2));
+                ln.setAttribute("y2", (py / S * 100).toFixed(2));
+                ln.style.opacity = (0.04 + 0.3 * d * d).toFixed(3);
+                if (p.z > best) { best = p.z; fi = i; }
+            });
+            const show = hoverNode >= 0 ? hoverNode : fi;
+            if (show !== frontIdx) {
+                frontIdx = show;
+                nodes.forEach((el, i) => el.classList.toggle("is-front", i === show));
+                if (label) {
+                    label.textContent = nodes[show].getAttribute("aria-label");
+                    label.classList.remove("swap");
+                    void label.offsetWidth;
+                    label.classList.add("swap");
+                }
+            }
+        }
+
+        function frame(now) {
+            if (token !== sphereToken) return;
+            const dt = Math.min(48, now - last);
+            last = now;
+            if (!drag) {
+                const slow = hoverNode >= 0 ? 0.15 : 1;
+                vx += (tx * slow - vx) * 0.04;
+                vy += (ty * slow - vy) * 0.04;
+                rotate(vx * dt, vy * dt);
+            }
+            if (visible) draw();
+            requestAnimationFrame(frame);
+        }
+
+        // mouse steers the spin; drag / swipe spins it with inertia
+        root.addEventListener("pointermove", e => {
+            const r = root.getBoundingClientRect();
+            if (drag) {
+                const dx = e.clientX - drag.x, dy = e.clientY - drag.y, dt = Math.max(16, e.timeStamp - drag.t);
+                rotate(-dy * 0.006, dx * 0.006);
+                vy = (dx * 0.006) / dt;
+                vx = (-dy * 0.006) / dt;
+                drag = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+                if (!animated) draw();
+                return;
+            }
+            if (e.pointerType !== "mouse") return;
+            const mx = (e.clientX - r.left) / r.width * 2 - 1, my = (e.clientY - r.top) / r.height * 2 - 1;
+            ty = BASE_Y + mx * 0.0007;
+            tx = BASE_X - my * 0.0005;
+        });
+        root.addEventListener("pointerleave", () => { tx = BASE_X; ty = BASE_Y; });
+        root.addEventListener("pointerdown", e => {
+            drag = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+            root.classList.add("is-dragging");
+            try { root.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+        });
+        const endDrag = () => { drag = null; root.classList.remove("is-dragging"); };
+        root.addEventListener("pointerup", endDrag);
+        root.addEventListener("pointercancel", endDrag);
+        nodes.forEach((el, i) => {
+            el.addEventListener("pointerenter", () => { hoverNode = i; });
+            el.addEventListener("pointerleave", () => { hoverNode = -1; });
+            el.addEventListener("focus", () => { hoverNode = i; draw(); });
+            el.addEventListener("blur", () => { hoverNode = -1; });
+        });
+        if ("IntersectionObserver" in window) {
+            new IntersectionObserver(en => { visible = en[0].isIntersecting; }).observe(root);
+        }
+
+        draw();
+        if (animated) requestAnimationFrame(frame);
+        else window.addEventListener("resize", draw);
     }
 
     function renderHero(sections) {
@@ -136,13 +256,13 @@
                 <div class="hero-copy">
                     ${p.available ? `<div class="status-badge reveal"><span class="status-dot"></span>${esc(p.availableText || "Available")}</div>` : ""}
                     <p class="hero-hello reveal" style="--i:1">Hello, I'm</p>
-                    <h1 class="hero-name reveal" style="--i:2"><span>${esc(p.firstName)}</span> <span class="grad">${esc(p.lastName)}</span></h1>
+                    <h1 class="hero-name reveal" style="--i:2"><span>${esc(p.firstName)}</span> <span class="name-dim">${esc(p.lastName)}</span></h1>
                     <div class="hero-role reveal" style="--i:3"><span class="role-prompt">~/</span><span id="typed"></span><span class="caret"></span></div>
                     <p class="hero-bio reveal" style="--i:4">${md(p.bio)}</p>
                     <div class="hero-ctas reveal" style="--i:5">${ctas}</div>
                     <div class="hero-socials reveal" style="--i:6">${socialLinks()}</div>
                 </div>
-                <div class="hero-visual reveal" style="--i:2">${renderSolar()}</div>
+                <div class="hero-visual reveal" style="--i:2">${renderSphere()}</div>
             </div>
             <div class="container launcher">
                 <p class="launcher-title">Explore</p>
@@ -156,7 +276,7 @@
         return `<section id="${esc(s.id)}" class="view section section-${esc(s.id)}" data-view="${esc(s.id)}">
             <div class="container">
                 <header class="section-head reveal">
-                    <span class="kicker"><span class="kicker-num">${String(n + 1).padStart(2, "0")}</span><span class="kicker-planet"></span>${esc(s.kicker || s.label)}</span>
+                    <span class="kicker"><span class="kicker-num">${String(n + 1).padStart(2, "0")}</span><span class="kicker-line"></span>${esc(s.kicker || s.label)}</span>
                     <h2 class="section-title">${esc(s.title || s.label)}</h2>
                 </header>
                 ${body}
@@ -172,7 +292,7 @@
         const tags = list(a.tags).map(t => `<span class="chip">${icon(t.icon)}${esc(t.text)}</span>`).join("");
         const nums = list(C.numbers).map((n, i) => {
             const live = n.source && n.source !== "static";
-            return `<div class="num-tile glass spot reveal" style="--i:${i}">
+            return `<div class="num-tile glass spot reveal${live ? " is-loading" : ""}" style="--i:${i}"${live ? ` data-src="${esc(n.source.split(".")[0])}"` : ""}>
                 <span class="num-value" data-target="${esc(n.value || (live ? "—" : "0"))}"${live ? ` data-live="${esc(n.source)}"` : ""}>${esc(n.value || "—")}</span>
                 <span class="num-label">${esc(n.label)}</span>
                 ${live ? '<span class="live-pip" title="Live data"></span>' : ""}
@@ -205,9 +325,9 @@
         const ig = C.integrations || {};
         const cards = [];
         if (ig.codeforces) {
-            cards.push(`<article class="live-card glass spot reveal">
+            cards.push(`<article class="live-card glass spot reveal is-loading" data-src="codeforces">
                 <div class="live-head">
-                    <span class="orb-icon">${icon("fas fa-code")}</span>
+                    <span class="orb-icon">${icon("si:codeforces")}</span>
                     <div><h3>Codeforces</h3><a href="https://codeforces.com/profile/${esc(encodeURIComponent(ig.codeforces))}" target="_blank" rel="noopener" class="handle">@${esc(ig.codeforces)}</a></div>
                     <span class="live-badge"><span class="live-pip"></span>Live</span>
                 </div>
@@ -232,7 +352,7 @@
             </article>`);
         }
         if (ig.github) {
-            cards.push(`<article class="live-card glass spot reveal" style="--i:1">
+            cards.push(`<article class="live-card glass spot reveal is-loading" data-src="github" style="--i:1">
                 <div class="live-head">
                     <span class="orb-icon">${icon("fab fa-github")}</span>
                     <div><h3>GitHub</h3><a href="https://github.com/${esc(encodeURIComponent(ig.github))}" target="_blank" rel="noopener" class="handle">@${esc(ig.github)}</a></div>
@@ -252,32 +372,65 @@
     R.projects = () => {
         const items = list(C.projects);
         if (!items.length) return "";
-        const tags = [...new Set(items.flatMap(p => list(p.tags)))];
-        const chips = tags.length > 1 ? `<div class="filters no-swipe reveal" role="tablist">
-            <button class="filter is-on" data-filter="*">All</button>
-            ${tags.map(t => `<button class="filter" data-filter="${esc(t.toLowerCase())}">${esc(t)}</button>`).join("")}
+        // filter chips only for tags shared by 2+ projects, most common first (keeps the bar short)
+        const counts = new Map();
+        items.forEach(p => new Set(list(p.tags).map(t => t.toLowerCase())).forEach(k => counts.set(k, (counts.get(k) || 0) + 1)));
+        const label = new Map();
+        items.flatMap(p => list(p.tags)).forEach(t => { if (!label.has(t.toLowerCase())) label.set(t.toLowerCase(), t); });
+        const tags = [...counts].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1]).map(([k]) => label.get(k));
+        const chips = tags.length > 1 ? `<div class="filters no-swipe reveal" aria-label="Filter projects">
+            <button class="filter is-on" data-filter="*" aria-pressed="true">All</button>
+            ${tags.map(t => `<button class="filter" data-filter="${esc(t.toLowerCase())}" aria-pressed="false">${esc(t)}</button>`).join("")}
         </div>` : "";
-        const cards = items.map((p, i) => `
-            <article class="project glass spot tilt reveal" style="--i:${i % 3};--h:${(i * 57 + 230) % 360}" data-tags="${esc(list(p.tags).map(t => t.toLowerCase()).join("|"))}">
+        // featured first (wide "bento" cards), then the rest in their saved order
+        const ordered = items.filter(p => p.featured).concat(items.filter(p => !p.featured));
+        const MAX_TAGS = 4, COLLAPSE_AFTER = 9, SHOW = 6;
+        const cards = ordered.map((p, i) => {
+            const primary = p.live || p.github;
+            const repo = (String(p.github || "").match(/github\.com\/([^/]+\/[^/#?]+)/i) || [])[1];
+            const allTags = list(p.tags);
+            const shown = allTags.slice(0, MAX_TAGS), more = allTags.slice(MAX_TAGS);
+            const extra = ordered.length > COLLAPSE_AFTER && i >= SHOW ? " is-extra" : "";
+            const addr = (() => {
+                try { const u = new URL(p.live || p.github); return (u.host + u.pathname).replace(/\/$/, ""); }
+                catch (e) { return String(p.title || "").toLowerCase().replace(/\s+/g, "-"); }
+            })();
+            const banner = p.banner ? esc(safeUrl(p.banner)) : "";
+            return `
+            <article class="project glass spot tilt reveal${p.featured ? " is-featured" : ""}${extra}" style="--i:${i % 3}" data-tags="${esc(allTags.map(t => t.toLowerCase()).join("|"))}">
                 <div class="project-art">
-                    <span class="p-planet">${icon(p.icon || "fas fa-rocket")}</span>
-                    <span class="p-ring"></span>
-                    <span class="p-moon"></span>
-                    ${p.featured ? '<span class="p-badge"><i class="fas fa-star"></i> Featured</span>' : ""}
+                    <div class="mac">
+                        <div class="mac-bar">
+                            <span class="mac-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                            <span class="mac-url"><i class="fas fa-lock" aria-hidden="true"></i><span>${esc(addr)}</span></span>
+                        </div>
+                        <div class="mac-view${banner ? "" : " no-banner"}">
+                            <span class="p-icon">${icon(p.icon || "fas fa-folder")}</span>
+                            ${banner ? `<img class="mac-bg" src="${banner}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                            <img class="mac-img" src="${banner}" alt="${esc(p.title)} preview" loading="lazy" decoding="async">` : ""}
+                        </div>
+                    </div>
                 </div>
                 <div class="project-body">
-                    <h3>${esc(p.title)}</h3>
-                    <p>${md(p.desc)}</p>
-                    <div class="tags">${list(p.tags).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+                    ${p.featured ? '<span class="p-badge"><i class="fas fa-star"></i> Featured</span>' : ""}
+                    <h3>${primary ? `<a href="${esc(safeUrl(primary))}"${ext(primary)} class="p-link">${esc(p.title)}</a>` : esc(p.title)}</h3>
+                    ${repo ? `<div class="p-meta" data-repo="${esc(repo.toLowerCase().replace(/\.git$/, ""))}"></div>` : ""}
+                    <p class="p-desc">${md(p.desc)}</p>
+                    ${allTags.length ? `<div class="tags">${shown.map(t => `<span>${esc(t)}</span>`).join("")}${more.length ? `<span class="tag-more" title="${esc(more.join(", "))}">+${more.length}</span>` : ""}</div>` : ""}
                     <div class="project-links">
-                        ${p.github ? `<a href="${esc(safeUrl(p.github))}" target="_blank" rel="noopener" class="icon-btn" aria-label="Source code">${icon("fab fa-github")}</a>` : ""}
+                        ${p.github ? `<a href="${esc(safeUrl(p.github))}" target="_blank" rel="noopener" class="icon-btn" aria-label="${esc(p.title)} source code" title="Source code">${icon("fab fa-github")}</a>` : "<span></span>"}
                         ${p.live ? `<a href="${esc(safeUrl(p.live))}" target="_blank" rel="noopener" class="link-arrow">Live demo ${icon("fas fa-arrow-up-right-from-square")}</a>` : ""}
                     </div>
                 </div>
-            </article>`).join("");
+            </article>`;
+        }).join("");
+        const hidden = ordered.length > COLLAPSE_AFTER ? ordered.length - SHOW : 0;
         const gh = (C.integrations || {}).github;
-        return `${chips}<div class="projects-grid">${cards}</div>
-            ${gh ? `<div class="center reveal"><a href="https://github.com/${esc(encodeURIComponent(gh))}" target="_blank" rel="noopener" class="btn btn-ghost">${icon("fab fa-github")}<span>View all on GitHub</span></a></div>` : ""}`;
+        return `${chips}<div class="projects-grid${hidden ? " is-collapsed" : ""}">${cards}</div>
+            <div class="center reveal more-row">
+                ${hidden ? `<button class="btn btn-ghost" data-expand><i class="fas fa-chevron-down"></i><span>Show ${hidden} more</span></button>` : ""}
+                ${gh ? `<a href="https://github.com/${esc(encodeURIComponent(gh))}" target="_blank" rel="noopener" class="btn btn-ghost">${icon("fab fa-github")}<span>View all on GitHub</span></a>` : ""}
+            </div>`;
     };
 
     R.achievements = () => {
@@ -289,8 +442,8 @@
         const typeChips = hasHack && hasContest
             ? `<button class="filter" data-filter="contest"><i class="fas fa-trophy"></i>Contests</button><button class="filter" data-filter="hackathon"><i class="fas fa-laptop-code"></i>Hackathons</button>` : "";
         const yearChips = years.length > 1 ? years.map(y => `<button class="filter" data-filter="${esc(y)}">${esc(y)}</button>`).join("") : "";
-        const chips = typeChips || yearChips ? `<div class="filters no-swipe reveal">
-            <button class="filter is-on" data-filter="*">All</button>${typeChips}${yearChips}
+        const chips = typeChips || yearChips ? `<div class="filters no-swipe reveal" aria-label="Filter achievements">
+            <button class="filter is-on" data-filter="*" aria-pressed="true">All</button>${typeChips}${yearChips}
         </div>` : "";
         const rows = items.map((a, i) => {
             const hack = a.type === "hackathon";
@@ -304,7 +457,7 @@
                 ? `<div class="rank rank-award"><i class="fas fa-award"></i><strong>${esc(a.award)}</strong></div>`
                 : a.rank ? `<div class="rank${/^\d+$/.test(a.rank) && +a.rank <= 30 ? " rank-top" : ""}"><span>Rank</span><strong>${esc(a.rank)}</strong></div>` : "";
             return `
-            <li class="trail-item reveal${hack ? " is-hack" : ""}" style="--i:${i % 4}" data-tags="${esc(a.year)}|${hack ? "hackathon" : "contest"}">
+            <li class="trail-item reveal${hack ? " is-hack" : ""}${i >= 5 ? " is-extra" : ""}" style="--i:${i % 4}" data-tags="${esc(a.year)}|${hack ? "hackathon" : "contest"}">
                 <span class="trail-node"></span>
                 <div class="trail-card glass spot">
                     <div class="trail-main">
@@ -317,7 +470,9 @@
                 </div>
             </li>`;
         }).join("");
-        return `${chips}<ol class="trail">${rows}</ol>`;
+        const SHOW = 5, hidden = items.length > SHOW + 1 ? items.length - SHOW : 0;
+        return `${chips}<ol class="trail${hidden ? " is-collapsed" : ""}">${rows}</ol>
+            ${hidden ? `<div class="center reveal more-row"><button class="btn btn-ghost" data-expand><i class="fas fa-chevron-down"></i><span>Show ${hidden} more</span></button></div>` : ""}`;
     };
 
     R.education = () => {
@@ -354,7 +509,7 @@
         </div>`);
         const form = c.form !== false && p.email ? `
             <form class="contact-form glass reveal" style="--i:1" id="contactForm" novalidate>
-                <div class="form-title"><span class="orb-icon sm">${icon("fas fa-satellite")}</span><div><h3>Send a transmission</h3><p>Opens your mail app with everything filled in.</p></div></div>
+                <div class="form-title"><span class="orb-icon sm">${icon("fas fa-pen-to-square")}</span><div><h3>Send a message</h3><p>Opens your mail app with everything filled in.</p></div></div>
                 <label class="field"><span>Your name</span><input name="name" required autocomplete="name" placeholder="Jane Doe"></label>
                 <label class="field"><span>Your email</span><input name="email" type="email" required autocomplete="email" placeholder="jane@example.com"></label>
                 <label class="field"><span>Message</span><textarea name="message" rows="4" required placeholder="Tell me about your idea…"></textarea></label>
@@ -391,7 +546,7 @@
             if (p.resume) el.setAttribute("href", p.resume);
         });
         const av = $("#appbarAvatarImg");
-        av.src = p.avatar || "img/avater.png";
+        av.src = p.avatar || "img/avatar.webp";
         av.alt = fullName();
 
         // Tab bar: Home + flagged sections (max 3) + More
@@ -410,7 +565,7 @@
 
         $("#moreSheetBody").innerHTML = `
             <div class="sheet-profile">
-                <img src="${esc(p.avatar || "img/avater.png")}" alt="">
+                <img src="${esc(p.avatar || "img/avatar.webp")}" alt="">
                 <div><strong>${esc(fullName())}</strong><span>${esc(list(p.roles)[0] || "")}</span></div>
             </div>
             <div class="sheet-grid">${rest.map(s =>
@@ -420,7 +575,7 @@
             <p class="sheet-foot">© ${new Date().getFullYear()} ${esc(fullName())}</p>`;
 
         $("#footer").innerHTML = `<div class="container footer-inner">
-            <a href="#home" class="brand"><span class="brand-mark"><i></i></span><span class="brand-text">${esc($("#brandText").textContent)}</span></a>
+            <a href="#home" class="brand"><span class="brand-mark"><img src="img/favicon.svg" alt="" width="32" height="32"></span><span class="brand-text">${esc($("#brandText").textContent)}</span></a>
             <p>© ${new Date().getFullYear()} <strong>${esc(fullName())}</strong>. ${esc((C.footer || {}).text || "")}</p>
             <div class="hero-socials">${socialLinks()}</div>
         </div>`;
@@ -444,10 +599,30 @@
         renderChrome();
         observeReveal();
         startTyping();
+        startSphere();
+        bindBanners();
         applyLive();
         if (!VIEWS.some(v => v.id === activeView)) activeView = "home";
         if (appMode) showView(activeView, null);
         else updateScrollUI();
+    }
+
+    function bindBanners() {
+        $$(".mac-img").forEach(img => {
+            const view = img.parentElement;
+            const done = () => {
+                if (!img.naturalWidth) { view.classList.add("no-banner"); return; }
+                const r = img.naturalWidth / img.naturalHeight;
+                const v = view.clientWidth && view.clientHeight ? view.clientWidth / view.clientHeight : 2;
+                view.classList.toggle("is-wide", r > v * 1.3);
+                view.classList.add("is-loaded");
+            };
+            if (img.complete) done();
+            else {
+                img.addEventListener("load", done, { once: true });
+                img.addEventListener("error", () => view.classList.add("no-banner"), { once: true });
+            }
+        });
     }
 
     /* =====================================================
@@ -579,34 +754,63 @@
                     progress: isNaN(r) ? 0 : next ? (r - tier[0]) / (next[0] - tier[0]) : 1
                 });
                 applyLive();
-            }).catch(() => {});
+            }).catch(() => liveFailed("codeforces"));
         }
         if (ig.github) {
             const u = encodeURIComponent(ig.github);
-            cached("gh:" + ig.github, async () => {
+            cached("gh2:" + ig.github, async () => {
                 const [user, repos] = await Promise.all([
                     getJSON(`https://api.github.com/users/${u}`),
                     getJSON(`https://api.github.com/users/${u}/repos?per_page=100&type=owner`).catch(() => [])
                 ]);
-                const langs = {};
+                const langs = {}, meta = {};
                 let stars = 0;
                 list(repos).forEach(r => {
                     stars += r.stargazers_count || 0;
+                    meta[String(r.full_name).toLowerCase()] = { stars: r.stargazers_count || 0, lang: r.language || "", pushed: r.pushed_at };
                     if (r.language && !r.fork) langs[r.language] = (langs[r.language] || 0) + 1;
                 });
                 return {
                     repos: String(user.public_repos ?? "—"),
                     followers: String(user.followers ?? "—"),
                     stars: String(stars),
-                    langs: Object.entries(langs).sort((a, b) => b[1] - a[1]).slice(0, 5)
+                    langs: Object.entries(langs).sort((a, b) => b[1] - a[1]).slice(0, 5),
+                    meta
                 };
-            }).then(d => { LIVE.github = d; applyLive(); }).catch(() => {});
+            }).then(d => { LIVE.github = d; applyLive(); }).catch(() => liveFailed("github"));
         }
     }
 
-    const LANG_COLORS = ["var(--accent)", "var(--accent-2)", "var(--sun)", "#f472b6", "#4ade80"];
+    const LANG_COLORS = ["#fafafa", "var(--accent)", "#a1a1aa", "#71717a", "#52525b"];
+
+    function liveFailed(src) {
+        $$(`[data-src="${src}"]`).forEach(el => el.classList.remove("is-loading"));
+    }
+
+    function ago(date) {
+        const d = (Date.now() - new Date(date).getTime()) / 86400000;
+        if (d < 1) return "today";
+        if (d < 2) return "yesterday";
+        if (d < 30) return Math.floor(d) + " days ago";
+        if (d < 365) return Math.floor(d / 30) + (Math.floor(d / 30) === 1 ? " month ago" : " months ago");
+        return Math.floor(d / 365) + (Math.floor(d / 365) === 1 ? " year ago" : " years ago");
+    }
 
     function applyLive() {
+        Object.keys(LIVE).forEach(liveFailed);
+        const metaMap = LIVE.github && LIVE.github.meta;
+        if (metaMap) {
+            $$(".p-meta[data-repo]").forEach(el => {
+                const m = metaMap[el.dataset.repo];
+                if (!m) return;
+                el.innerHTML = [
+                    m.lang ? `<span><i class="lang-dot"></i>${esc(m.lang)}</span>` : "",
+                    m.stars ? `<span><i class="far fa-star"></i>${m.stars}</span>` : "",
+                    m.pushed ? `<span><i class="far fa-clock"></i>Updated ${ago(m.pushed)}</span>` : ""
+                ].join("");
+                el.classList.add("is-on");
+            });
+        }
         $$("[data-live]").forEach(el => {
             const [src, key] = el.dataset.live.split(".");
             const v = LIVE[src] && LIVE[src][key];
@@ -663,6 +867,7 @@
         $$("#topnavLinks a").forEach(a => {
             const on = a.dataset.nav === id;
             a.classList.toggle("is-active", on);
+            if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
             if (on) found = a;
         });
         if (pill) {
@@ -689,8 +894,10 @@
     /* =====================================================
        MOBILE APP MODE: views, tabs, swipe, sheet
     ===================================================== */
+    const scrollMem = {};
     function showView(id, dir) {
         const view = VIEWS.find(v => v.id === id) || VIEWS[0];
+        if (dir) scrollMem[activeView] = window.scrollY;
         id = view.id;
         activeView = id;
         $$(".view").forEach(sec => {
@@ -702,7 +909,7 @@
                 sec.classList.add(dir === 1 ? "enter-right" : dir === -1 ? "enter-left" : "enter-up");
             }
         });
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: dir ? (scrollMem[id] || 0) : 0, behavior: "instant" });
         const rest = ($("#tabbar").dataset.rest || "").split(",");
         $$("#tabbar .tab").forEach(t => {
             const on = t.dataset.go === id || (t.hasAttribute("data-more") && rest.includes(id));
@@ -812,17 +1019,26 @@
         if (copy) {
             const text = copy.dataset.copy;
             (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
-                .then(() => toast("Copied to clipboard"))
+                .then(() => {
+                    toast("Copied to clipboard");
+                    const i = copy.querySelector("i");
+                    if (i) { i.className = "fas fa-check"; copy.classList.add("is-done"); }
+                    setTimeout(() => { if (i) i.className = "far fa-copy"; copy.classList.remove("is-done"); }, 1600);
+                })
                 .catch(() => toast(text));
             return;
         }
 
+        const more = e.target.closest("[data-expand]");
+        if (more) { expand(more.closest(".container")); return; }
+
         const filter = e.target.closest(".filter");
         if (filter) {
             const box = filter.parentElement;
-            $$(".filter", box).forEach(f => f.classList.toggle("is-on", f === filter));
+            $$(".filter", box).forEach(f => { f.classList.toggle("is-on", f === filter); f.setAttribute("aria-pressed", f === filter); });
             const f = filter.dataset.filter;
             const scope = box.parentElement;
+            if (f !== "*") expand(scope);
             $$("[data-tags]", scope).forEach(card => {
                 const show = f === "*" || card.dataset.tags.split("|").includes(f);
                 card.classList.toggle("is-hidden", !show);
@@ -881,6 +1097,12 @@
         if (card && !card.contains(e.relatedTarget)) card.style.transform = "";
     });
 
+    function expand(scope) {
+        if (!scope) return;
+        $$(".is-collapsed", scope).forEach(el => el.classList.remove("is-collapsed"));
+        $$("[data-expand]", scope).forEach(b => b.remove());
+    }
+
     let toastTimer;
     function toast(msg) {
         const t = $("#toast");
@@ -919,6 +1141,8 @@
     const initial = location.hash.slice(1);
     if (initial) activeView = initial;
     renderAll();
+    // the desktop scroll-spy in renderAll() resets activeView; restore the deep link before choosing a mode
+    if (initial && VIEWS.some(v => v.id === initial)) activeView = initial;
     setMode();
     appMQ.addEventListener ? appMQ.addEventListener("change", setMode) : appMQ.addListener(setMode);
     loadLive();
@@ -935,8 +1159,8 @@
     };
     if (PREVIEW) hidePreloader();
     else {
-        window.addEventListener("load", () => setTimeout(hidePreloader, 350));
-        setTimeout(hidePreloader, 2500);
+        const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+        Promise.race([fontsReady, new Promise(r => setTimeout(r, 700))]).then(() => setTimeout(hidePreloader, 60));
     }
 
     if ("serviceWorker" in navigator && location.protocol === "https:" && !PREVIEW) {
