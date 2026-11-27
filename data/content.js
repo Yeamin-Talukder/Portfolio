@@ -289,22 +289,6 @@ window.PORTFOLIO = {
       "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Yeamin-chess-bot@main/assets/landing_new.png"
     },
     {
-      "title": "Codeforces Analysis",
-      "desc": "A website that analyzes any Codeforces profile — ratings, solved problems and progress at a glance. Built with the help of AI.",
-      "icon": "si:codeforces",
-      "platforms": [
-        "web"
-      ],
-      "tags": [
-        "Web",
-        "Codeforces"
-      ],
-      "github": "https://github.com/Yeamin-Talukder/codeforces_analysis",
-      "live": "https://yeamin-talukder.github.io/codeforces_analysis/",
-      "featured": false,
-      "banner": ""
-    },
-    {
       "title": "NFC-HUB",
       "desc": "An innovative NFC-based hub built to streamline digital interactions and enable seamless contactless data sharing.",
       "icon": "fas fa-microchip",
