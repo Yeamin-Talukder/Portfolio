@@ -206,6 +206,16 @@ textarea.input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .chip-tag button:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
 .chip-tag.accent { padding-right: 11px; background: rgba(var(--sun-rgb), 0.12); border-color: rgba(var(--sun-rgb), 0.35); }
 .change-list .chip-tag { padding-right: 11px; }
+.check-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.check-chip {
+    display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; cursor: pointer; user-select: none;
+    font-size: 0.84rem; font-weight: 500; color: var(--muted); background: var(--surface); border: 1px solid var(--border);
+    transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+.check-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.check-chip:hover { color: var(--text); border-color: var(--border-2); }
+.check-chip.is-on { color: #fff; background: rgba(var(--accent-rgb), 0.18); border-color: rgba(var(--accent-rgb), 0.55); }
+.check-chip:has(input:focus-visible) { outline: 2px solid var(--accent-2); outline-offset: 2px; }
 .chip-entry { flex: 1; min-width: 120px; border: 0; outline: none; background: none; padding: 4px 6px; }
 .chip-entry::placeholder { color: var(--dim); }
 

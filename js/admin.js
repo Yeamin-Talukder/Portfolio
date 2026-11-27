@@ -114,6 +114,7 @@
         image: (path, label, o = {}) => Object.assign({ type: "image", path, label }, o),
         file: (path, label, o = {}) => Object.assign({ type: "file", path, label }, o),
         list: (path, label, o = {}) => Object.assign({ type: "list", path, label }, o),
+        checks: (path, label, options, o = {}) => Object.assign({ type: "checks", path, label, options }, o),
         group: (title, fields, o = {}) => Object.assign({ type: "group", title, fields }, o)
     };
     const MD_HINT = "Supports **bold**, *italic* and [links](https://…).";
@@ -241,12 +242,20 @@
             fields: [
                 F.list("projects", "Projects", {
                     addLabel: "Add project", titleKey: "title", iconOf: i => i.icon, subOf: i => (i.tags || []).join(" · "),
-                    newItem: () => ({ title: "New project", desc: "", icon: "fas fa-folder", tags: [], github: "", live: "", featured: false }),
+                    newItem: () => ({ title: "New project", desc: "", icon: "fas fa-folder", platforms: [], tags: [], github: "", live: "", featured: false }),
                     fields: [
                         F.text("title", "Title", { half: true }),
                         F.icon("icon", "Icon", { half: true }),
                         F.image("banner", "Banner / screenshot", { wide: true, readme: true, hint: "Shown inside the window on the card. “From README” grabs the banner from the project's GitHub README." }),
                         F.area("desc", "Description", { rows: 3, hint: MD_HINT }),
+                        F.checks("platforms", "Platforms", [
+                            { value: "web", label: "Web", icon: "fas fa-globe" },
+                            { value: "android", label: "Android", icon: "fab fa-android" },
+                            { value: "ios", label: "iOS", icon: "fab fa-app-store-ios" },
+                            { value: "windows", label: "Windows", icon: "fab fa-windows" },
+                            { value: "macos", label: "macOS", icon: "fab fa-apple" },
+                            { value: "linux", label: "Linux", icon: "fab fa-linux" }
+                        ], { hint: "Powers the project filters. Mobile = Android/iOS, PC = Windows/macOS/Linux." }),
                         F.strings("tags", "Tags"),
                         F.url("github", "Source code URL", { half: true }),
                         F.url("live", "Live demo URL", { half: true }),
@@ -438,6 +447,15 @@
                     <div class="chips-input" data-chips="${esc(path)}">
                         ${arr.map((t, i) => `<span class="chip-tag" draggable="false">${esc(t)}<button type="button" data-act="chip-del" data-path="${esc(path)}" data-index="${i}" aria-label="Remove ${esc(t)}"><i class="fas fa-xmark"></i></button></span>`).join("")}
                         <input class="chip-entry" data-chip-input="${esc(path)}" data-key="${esc(path)}#chip" placeholder="${arr.length ? "Add…" : "Type and press Enter"}">
+                    </div>${hint(f)}</div>`;
+            }
+            case "checks": {
+                const on = new Set(Array.isArray(v) ? v : []);
+                return `<div class="field">${label(f)}
+                    <div class="check-chips" role="group" aria-label="${esc(f.label)}">
+                        ${f.options.map(o => `<label class="check-chip${on.has(o.value) ? " is-on" : ""}">
+                            <input type="checkbox" data-check-group="${esc(path)}" value="${esc(o.value)}" ${on.has(o.value) ? "checked" : ""}>
+                            ${o.icon ? `<i class="${esc(o.icon)}"></i>` : ""}<span>${esc(o.label)}</span></label>`).join("")}
                     </div>${hint(f)}</div>`;
             }
             case "list":
@@ -750,6 +768,15 @@
        EDITOR EVENTS
     ===================================================== */
     editor.addEventListener("input", e => {
+        const grp = e.target.closest("[data-check-group]");
+        if (grp) {
+            const path = grp.dataset.checkGroup;
+            const vals = $$(`[data-check-group="${CSS.escape(path)}"]`, editor).filter(x => x.checked).map(x => x.value);
+            setPath(state, path, vals);
+            grp.closest(".check-chip").classList.toggle("is-on", grp.checked);
+            changed(false);
+            return;
+        }
         const el = e.target.closest("[data-bind]");
         if (!el) return;
         const path = el.dataset.bind;

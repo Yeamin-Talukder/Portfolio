@@ -175,6 +175,9 @@ window.PORTFOLIO = {
       "title": "Jolpai Keyboard",
       "desc": "A free, open-source, privacy-first Bangla (Bengali) keyboard for Android with Avro phonetic typing, the National (জাতীয়) layout, English QWERTY, smart suggestions, an offline spelling and grammar check, offline English↔Bangla translation, voice typing, a clipboard manager and 64 themes. No ads, no tracking, and nothing you type leaves your phone.",
       "icon": "fas fa-keyboard",
+      "platforms": [
+        "android"
+      ],
       "tags": [
         "keyboard",
         "android",
@@ -197,6 +200,9 @@ window.PORTFOLIO = {
       "title": "ShareBro",
       "desc": "ShareBro is a free Android app that groups your photos by face with on-device AI and sends each friend only the photos they're in, straight to their phone over Wi-Fi, a hotspot or with no network at all. It's built for group trips, weddings and events: the friend who took 2,000 photos can share them with everyone in minutes instead of hours. Works 100% offline: no cloud, no uploads, no account.",
       "icon": "fas fa-images",
+      "platforms": [
+        "android"
+      ],
       "tags": [
         "flutter app",
         "photo recognizer",
@@ -210,9 +216,32 @@ window.PORTFOLIO = {
       "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/ShareBro@main/docs/cover.jpg"
     },
     {
+      "title": "PasteHive",
+      "desc": "A clipboard manager for Windows, macOS and Android that keeps a searchable history and syncs your clipboard between your devices over the local network. Built with Flutter.",
+      "icon": "fas fa-clipboard",
+      "platforms": [
+        "windows",
+        "macos",
+        "android"
+      ],
+      "tags": [
+        "Flutter",
+        "Desktop",
+        "Mobile",
+        "Cross-platform"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/PasteHive",
+      "live": "https://yeamin-talukder.github.io/PasteHive/",
+      "featured": true,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/PasteHive@main/docs/banner.png"
+    },
+    {
       "title": "Jolpai Typing",
       "desc": "Free online Bangla (Bijoy) and English typing practice, with a step-by-step course to learn Bijoy touch typing. বাংলা টাইপিং শিখুন।",
       "icon": "fas fa-spell-check",
+      "platforms": [
+        "web"
+      ],
       "tags": [
         "TypeScript",
         "Web",
@@ -227,6 +256,9 @@ window.PORTFOLIO = {
       "title": "BU Bus Tracker",
       "desc": "Bus tracking app for University of Barishal students: live bus location, the official bus schedule, stops and an offline map. Built with Flutter, MapLibre, OpenStreetMap and Firebase.",
       "icon": "fas fa-bus",
+      "platforms": [
+        "android"
+      ],
       "tags": [
         "Flutter",
         "Firebase",
@@ -238,9 +270,28 @@ window.PORTFOLIO = {
       "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Barishal-University-Bus-Tracking-App@main/docs/assets/readme-cover.png"
     },
     {
+      "title": "Yeamin Chess Bot",
+      "desc": "Play chess directly in your browser against my custom bot. A web-based chess engine and interface.",
+      "icon": "fas fa-robot",
+      "platforms": [
+        "web"
+      ],
+      "tags": [
+        "JavaScript",
+        "Game"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/Yeamin-chess-bot",
+      "live": "https://yeamin-chess-bot.netlify.app/",
+      "featured": false,
+      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Yeamin-chess-bot@main/assets/landing_new.png"
+    },
+    {
       "title": "Codeforces Analysis",
       "desc": "A website that analyzes any Codeforces profile — ratings, solved problems and progress at a glance. Built with the help of AI.",
       "icon": "si:codeforces",
+      "platforms": [
+        "web"
+      ],
       "tags": [
         "Web",
         "Codeforces"
@@ -251,9 +302,28 @@ window.PORTFOLIO = {
       "banner": ""
     },
     {
+      "title": "NFC-HUB",
+      "desc": "An innovative NFC-based hub built to streamline digital interactions and enable seamless contactless data sharing.",
+      "icon": "fas fa-microchip",
+      "platforms": [
+        "web"
+      ],
+      "tags": [
+        "NFC",
+        "Web"
+      ],
+      "github": "https://github.com/Yeamin-Talukder/NFC-HUB",
+      "live": "https://nfc-hub.infinityfree.me/",
+      "featured": false,
+      "banner": ""
+    },
+    {
       "title": "Current-Detection",
       "desc": "A Java-based current detection application designed for reliable monitoring and identification of electrical current states.",
       "icon": "fas fa-bolt",
+      "platforms": [
+        "android"
+      ],
       "tags": [
         "Java",
         "Backend"
@@ -267,6 +337,9 @@ window.PORTFOLIO = {
       "title": "Chess App",
       "desc": "A fully functional Chess application built for mobile users with modern interface paradigms and smooth gameplay.",
       "icon": "fas fa-chess-knight",
+      "platforms": [
+        "android"
+      ],
       "tags": [
         "Kotlin",
         "Mobile"
@@ -275,32 +348,6 @@ window.PORTFOLIO = {
       "live": "",
       "featured": false,
       "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Chess-app@main/assets/header.svg"
-    },
-    {
-      "title": "NFC-HUB",
-      "desc": "An innovative NFC-based hub built to streamline digital interactions and enable seamless contactless data sharing.",
-      "icon": "fas fa-microchip",
-      "tags": [
-        "NFC",
-        "Web"
-      ],
-      "github": "https://github.com/Yeamin-Talukder/NFC-HUB",
-      "live": "https://nfc-hub.infinityfree.me/",
-      "featured": false,
-      "banner": ""
-    },
-    {
-      "title": "Yeamin Chess Bot",
-      "desc": "Play chess directly in your browser against my custom bot. A web-based chess engine and interface.",
-      "icon": "fas fa-robot",
-      "tags": [
-        "JavaScript",
-        "Game"
-      ],
-      "github": "https://github.com/Yeamin-Talukder/Yeamin-chess-bot",
-      "live": "https://yeamin-chess-bot.netlify.app/",
-      "featured": true,
-      "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Yeamin-chess-bot@main/assets/landing_new.png"
     }
   ],
   "achievements": [

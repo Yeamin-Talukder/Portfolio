@@ -286,6 +286,24 @@
 
     const R = {};
 
+    const PLATFORMS = [
+        { key: "web", label: "Web", icon: "fas fa-globe" },
+        { key: "android", label: "Android", icon: "fab fa-android" },
+        { key: "ios", label: "iOS", icon: "fab fa-app-store-ios" },
+        { key: "windows", label: "Windows", icon: "fab fa-windows" },
+        { key: "macos", label: "macOS", icon: "fab fa-apple" },
+        { key: "linux", label: "Linux", icon: "fab fa-linux" }
+    ];
+    const PLATFORM_FILTERS = [
+        { key: "web", label: "Web", icon: "fas fa-globe" },
+        { key: "mobile", label: "Mobile", icon: "fas fa-mobile-screen", group: true },
+        { key: "android", label: "Android", icon: "fab fa-android" },
+        { key: "ios", label: "iOS", icon: "fab fa-app-store-ios" },
+        { key: "pc", label: "PC", icon: "fas fa-desktop", group: true },
+        { key: "windows", label: "Windows", icon: "fab fa-windows" },
+        { key: "macos", label: "macOS", icon: "fab fa-apple" }
+    ];
+
     R.about = () => {
         const a = C.about || {};
         const paras = list(a.paragraphs).map(t => `<p>${md(t)}</p>`).join("");
@@ -372,32 +390,39 @@
     R.projects = () => {
         const items = list(C.projects);
         if (!items.length) return "";
-        // filter chips only for tags shared by 2+ projects, most common first (keeps the bar short)
-        const counts = new Map();
-        items.forEach(p => new Set(list(p.tags).map(t => t.toLowerCase())).forEach(k => counts.set(k, (counts.get(k) || 0) + 1)));
-        const label = new Map();
-        items.flatMap(p => list(p.tags)).forEach(t => { if (!label.has(t.toLowerCase())) label.set(t.toLowerCase(), t); });
-        const tags = [...counts].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1]).map(([k]) => label.get(k));
-        const chips = tags.length > 1 ? `<div class="filters no-swipe reveal" aria-label="Filter projects">
-            <button class="filter is-on" data-filter="*" aria-pressed="true">All</button>
-            ${tags.map(t => `<button class="filter" data-filter="${esc(t.toLowerCase())}" aria-pressed="false">${esc(t)}</button>`).join("")}
-        </div>` : "";
-        // featured first (wide "bento" cards), then the rest in their saved order
-        const ordered = items.filter(p => p.featured).concat(items.filter(p => !p.featured));
-        const MAX_TAGS = 4, COLLAPSE_AFTER = 9, SHOW = 6;
-        const cards = ordered.map((p, i) => {
+        // platform filter: each project lists its platforms; Mobile / PC are groups
+        const keysOf = p => {
+            const k = new Set(list(p.platforms).map(x => String(x).toLowerCase()));
+            if (k.has("android") || k.has("ios")) k.add("mobile");
+            if (k.has("windows") || k.has("macos") || k.has("linux")) k.add("pc");
+            return [...k];
+        };
+        const count = key => items.filter(p => keysOf(p).includes(key)).length;
+        const chips = items.some(p => list(p.platforms).length) ? `<div class="filters no-swipe reveal" aria-label="Filter projects by platform">
+            <button class="filter is-on" data-filter="*" aria-pressed="true">All<span class="filter-n">${items.length}</span></button>
+            ${PLATFORM_FILTERS.map(f => {
+                const n = count(f.key);
+                return `<button class="filter${f.group ? " is-group" : ""}" data-filter="${f.key}" aria-pressed="false"${n ? "" : ` disabled title="No ${esc(f.label)} projects yet"`}>${icon(f.icon)}${esc(f.label)}<span class="filter-n">${n}</span></button>`;
+            }).join("")}
+        </div>
+        <p class="filter-status" aria-live="polite">Showing all <b>${items.length}</b> projects</p>` : "";
+        // featured -> full-width "spotlight" rows; the rest -> grid. Both keep the saved (admin) order.
+        const featured = items.filter(p => p.featured), rest = items.filter(p => !p.featured);
+        const MAX_TAGS = 4, COLLAPSE_AFTER = 8, SHOW = 6;
+        const collapse = rest.length > COLLAPSE_AFTER;
+        const card = (p, i, extraClass) => {
             const primary = p.live || p.github;
             const repo = (String(p.github || "").match(/github\.com\/([^/]+\/[^/#?]+)/i) || [])[1];
             const allTags = list(p.tags);
             const shown = allTags.slice(0, MAX_TAGS), more = allTags.slice(MAX_TAGS);
-            const extra = ordered.length > COLLAPSE_AFTER && i >= SHOW ? " is-extra" : "";
+            const extra = extraClass || "";
             const addr = (() => {
                 try { const u = new URL(p.live || p.github); return (u.host + u.pathname).replace(/\/$/, ""); }
                 catch (e) { return String(p.title || "").toLowerCase().replace(/\s+/g, "-"); }
             })();
             const banner = p.banner ? esc(safeUrl(p.banner)) : "";
             return `
-            <article class="project glass spot tilt reveal${p.featured ? " is-featured" : ""}${extra}" style="--i:${i % 3}" data-tags="${esc(allTags.map(t => t.toLowerCase()).join("|"))}">
+            <article class="project glass spot tilt reveal${p.featured ? " is-featured" : ""}${extra}" style="--i:${i % 3}" data-tags="${esc(keysOf(p).join("|"))}">
                 <div class="project-art">
                     <div class="mac">
                         <div class="mac-bar">
@@ -414,6 +439,7 @@
                 <div class="project-body">
                     ${p.featured ? '<span class="p-badge"><i class="fas fa-star"></i> Featured</span>' : ""}
                     <h3>${primary ? `<a href="${esc(safeUrl(primary))}"${ext(primary)} class="p-link">${esc(p.title)}</a>` : esc(p.title)}</h3>
+                    ${list(p.platforms).length ? `<div class="p-platforms">${PLATFORMS.filter(x => list(p.platforms).map(String).map(v => v.toLowerCase()).includes(x.key)).map(x => `<span title="${esc(x.label)}">${icon(x.icon)}<span>${esc(x.label)}</span></span>`).join("")}</div>` : ""}
                     ${repo ? `<div class="p-meta" data-repo="${esc(repo.toLowerCase().replace(/\.git$/, ""))}"></div>` : ""}
                     <p class="p-desc">${md(p.desc)}</p>
                     ${allTags.length ? `<div class="tags">${shown.map(t => `<span>${esc(t)}</span>`).join("")}${more.length ? `<span class="tag-more" title="${esc(more.join(", "))}">+${more.length}</span>` : ""}</div>` : ""}
@@ -423,10 +449,13 @@
                     </div>
                 </div>
             </article>`;
-        }).join("");
-        const hidden = ordered.length > COLLAPSE_AFTER ? ordered.length - SHOW : 0;
+        };
+        const spotlight = featured.map((p, i) => card(p, 0)).join("");
+        const grid = rest.map((p, i) => card(p, i, collapse && i >= SHOW ? " is-extra" : "")).join("");
+        const hidden = collapse ? rest.length - SHOW : 0;
         const gh = (C.integrations || {}).github;
-        return `${chips}<div class="projects-grid${hidden ? " is-collapsed" : ""}">${cards}</div>
+        return `${chips}${spotlight ? `<div class="projects-spotlight">${spotlight}</div>` : ""}
+            ${grid ? `<div class="projects-grid${hidden ? " is-collapsed" : ""}">${grid}</div>` : ""}
             <div class="center reveal more-row">
                 ${hidden ? `<button class="btn btn-ghost" data-expand><i class="fas fa-chevron-down"></i><span>Show ${hidden} more</span></button>` : ""}
                 ${gh ? `<a href="https://github.com/${esc(encodeURIComponent(gh))}" target="_blank" rel="noopener" class="btn btn-ghost">${icon("fab fa-github")}<span>View all on GitHub</span></a>` : ""}
@@ -1039,10 +1068,23 @@
             const f = filter.dataset.filter;
             const scope = box.parentElement;
             if (f !== "*") expand(scope);
+            let shown = 0;
             $$("[data-tags]", scope).forEach(card => {
                 const show = f === "*" || card.dataset.tags.split("|").includes(f);
+                const was = !card.classList.contains("is-hidden");
                 card.classList.toggle("is-hidden", !show);
+                if (show) {
+                    shown++;
+                    if (!was || f !== "*") { card.classList.remove("filter-in"); void card.offsetWidth; card.classList.add("filter-in"); }
+                }
             });
+            const status = $(".filter-status", scope);
+            if (status) {
+                const name = filter.childNodes[1] ? filter.childNodes[1].textContent.trim() : filter.textContent.trim();
+                status.innerHTML = f === "*" ? `Showing all <b>${shown}</b> projects`
+                    : shown ? `<b>${shown}</b> ${shown === 1 ? "project" : "projects"} for <b>${esc(name)}</b>`
+                    : `No ${esc(name)} projects yet`;
+            }
             return;
         }
 
