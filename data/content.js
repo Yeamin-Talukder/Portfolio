@@ -285,7 +285,7 @@ window.PORTFOLIO = {
       ],
       "github": "https://github.com/Yeamin-Talukder/Yeamin-chess-bot",
       "live": "https://yeamin-chess-bot.netlify.app/",
-      "featured": false,
+      "featured": true,
       "banner": "https://cdn.jsdelivr.net/gh/Yeamin-Talukder/Yeamin-chess-bot@main/assets/landing_new.png"
     },
     {

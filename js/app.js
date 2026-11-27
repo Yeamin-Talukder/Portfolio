@@ -406,8 +406,9 @@
             }).join("")}
         </div>
         <p class="filter-status" aria-live="polite">Showing all <b>${items.length}</b> projects</p>` : "";
-        // featured -> full-width "spotlight" rows; the rest -> grid. Both keep the saved (admin) order.
-        const featured = items.filter(p => p.featured), rest = items.filter(p => !p.featured);
+        // Saved (admin) order is kept exactly: consecutive featured projects become full-width
+        // "spotlight" rows, consecutive regular ones become a grid block.
+        const rest = items.filter(p => !p.featured);
         const MAX_TAGS = 4, COLLAPSE_AFTER = 8, SHOW = 6;
         const collapse = rest.length > COLLAPSE_AFTER;
         const card = (p, i, extraClass) => {
@@ -422,7 +423,7 @@
             })();
             const banner = p.banner ? esc(safeUrl(p.banner)) : "";
             return `
-            <article class="project glass spot tilt reveal${p.featured ? " is-featured" : ""}${extra}" style="--i:${i % 3}" data-tags="${esc(keysOf(p).join("|"))}">
+            <article class="project glass spot tilt reveal${p.featured ? " is-featured" : ""}${extra}${p.__flip ? " is-flip" : ""}" style="--i:${i % 3}" data-tags="${esc(keysOf(p).join("|"))}">
                 <div class="project-art">
                     <div class="mac">
                         <div class="mac-bar">
@@ -450,12 +451,22 @@
                 </div>
             </article>`;
         };
-        const spotlight = featured.map((p, i) => card(p, 0)).join("");
-        const grid = rest.map((p, i) => card(p, i, collapse && i >= SHOW ? " is-extra" : "")).join("");
+        const segments = [];
+        let fi = 0, gi = 0;
+        items.forEach(p => {
+            const kind = p.featured ? "spot" : "grid";
+            let seg = segments[segments.length - 1];
+            if (!seg || seg.kind !== kind) segments.push(seg = { kind, html: [], n: 0 });
+            if (p.featured) seg.html.push(card(Object.assign({}, p, { __flip: fi++ % 2 === 1 }), 0));
+            else { seg.html.push(card(p, gi, collapse && gi >= SHOW ? " is-extra" : "")); gi++; }
+            seg.n++;
+        });
         const hidden = collapse ? rest.length - SHOW : 0;
+        const flow = segments.map(sg => sg.kind === "spot"
+            ? `<div class="projects-spotlight">${sg.html.join("")}</div>`
+            : `<div class="projects-grid${sg.n < 3 ? " is-short" : ""}${hidden ? " is-collapsed" : ""}">${sg.html.join("")}</div>`).join("");
         const gh = (C.integrations || {}).github;
-        return `${chips}${spotlight ? `<div class="projects-spotlight">${spotlight}</div>` : ""}
-            ${grid ? `<div class="projects-grid${hidden ? " is-collapsed" : ""}">${grid}</div>` : ""}
+        return `${chips}<div class="projects-flow">${flow}</div>
             <div class="center reveal more-row">
                 ${hidden ? `<button class="btn btn-ghost" data-expand><i class="fas fa-chevron-down"></i><span>Show ${hidden} more</span></button>` : ""}
                 ${gh ? `<a href="https://github.com/${esc(encodeURIComponent(gh))}" target="_blank" rel="noopener" class="btn btn-ghost">${icon("fab fa-github")}<span>View all on GitHub</span></a>` : ""}
