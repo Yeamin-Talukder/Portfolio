@@ -198,10 +198,13 @@ window.PORTFOLIO = {
     },
     {
       "title": "ShareBro",
-      "desc": "ShareBro is a free Android app that groups your photos by face with on-device AI and sends each friend only the photos they're in, straight to their phone over Wi-Fi, a hotspot or with no network at all. It's built for group trips, weddings and events: the friend who took 2,000 photos can share them with everyone in minutes instead of hours. Works 100% offline: no cloud, no uploads, no account.",
+      "desc": "ShareBro is a free app for Android, iOS, Windows and macOS that groups your photos by face with on-device AI and sends each friend only the photos they're in, straight to their phone over Wi-Fi, a hotspot or with no network at all. It's built for group trips, weddings and events: the friend who took 2,000 photos can share them with everyone in minutes instead of hours. Works 100% offline: no cloud, no uploads, no account.",
       "icon": "fas fa-images",
       "platforms": [
-        "android"
+        "android",
+        "ios",
+        "windows",
+        "macos"
       ],
       "tags": [
         "flutter app",
